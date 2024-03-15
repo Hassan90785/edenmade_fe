@@ -1,6 +1,15 @@
+import { useAuth } from "../auth/authContext";
 import RecipeCard from "../components/RecipeCard";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
+  const navigate = useNavigate();
+  const handleButtonClick = () => {
+    // Navigate to the "/orderFlow" route
+    navigate("/order-flow");
+  };
+  const {   authUser } = useAuth();
+
   return (
     <>
       <section className="banner-section">
@@ -11,10 +20,14 @@ export default function LandingPage() {
                 Eat healthy, save time, and hone your skills in the kitchen.
               </h1>
               <h2 className="mb-4">Now with more choices every week</h2>
-              <button className="btn btn-primary aj-button body-text-small fw-700 px-4">
+              {!authUser?<button
+                className="btn btn-primary aj-button body-text-small fw-700 px-4"
+                onClick={handleButtonClick}
+              >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxes
-              </button>
+                View our Boxe
+              </button>:null}
+              
             </div>
           </div>
         </div>
@@ -69,10 +82,13 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="col-md-4 col-12 text-end">
-              <button className="btn btn-primary aj-button body-text-small fw-700 px-4">
+            {!authUser?<button
+                className="btn btn-primary aj-button body-text-small fw-700 px-4"
+                onClick={handleButtonClick}
+              >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxes
-              </button>
+                View our Boxe
+              </button>:null}
             </div>
           </div>
           <div className="row">
@@ -95,10 +111,13 @@ export default function LandingPage() {
                 Eat healthy, save time, and hone your skills in the kitchen. Now
                 with more choices every week
               </h2>
-              <button className="btn btn-primary aj-button body-text-small fw-700 px-4">
+              {!authUser?<button
+                className="btn btn-primary aj-button body-text-small fw-700 px-4"
+                onClick={handleButtonClick}
+              >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxes
-              </button>
+                View our Boxe
+              </button>:null}
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ export default function Footer() {
               </p>
               <ul className="footer-menu">
                 <li>
-                  <a className="body-text-small" href="#">
+                  <a className="body-text-small" href="/about">
                     About Us
                   </a>
                 </li>

@@ -1,7 +1,16 @@
 import ProductSummary from "../components/ProductSummary";
 import RecipeCard from "../components/RecipeCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
+  const navigate = useNavigate();
+  const handleButtonClickMyMenu = () => {
+    // console.log(
+    //   "🚀 ~ file: OrderFlow.jsx:27 ~ handleButtonClickMyMenu ~ consol:"
+    // );
+    // Navigate to the "/orderFlow" route
+    navigate("/change-meal");
+  };
   return (
     <div className="bg-doodle py-md-5 py-3">
       <div className="container my-md-5 my-3">
@@ -42,7 +51,10 @@ export default function Cart() {
                 <button className="btn btn-transparent aj-button body-text-small fw-700 px-5 me-3">
                   Empty Cart
                 </button>
-                <button className="btn btn-primary aj-button body-text-small fw-700 px-5">
+                <button
+                  className="btn btn-primary aj-button body-text-small fw-700 px-5"
+                  onClick={handleButtonClickMyMenu}
+                >
                   Update Cart
                 </button>
               </div>

@@ -1,4 +1,7 @@
+import { useAuth } from "../auth/authContext";
+
 export default function Header() {
+  const { authUser, userSignOut, userSignInWithGoogle } = useAuth();
   return (
     <div className="aj-drop-shadow background-white">
       <div className="container">
@@ -49,7 +52,10 @@ export default function Header() {
                 {/* <button className="btn btn-primary">Login</button> */}
 
                 {/* For Registered User */}
-                <button className="btn btn-primary mx-3">My Menu</button>
+                <a href="http://localhost:5173/my-menu">
+                  <button className="btn btn-primary mx-3">My Menu</button>
+                </a>
+
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                   <li className="nav-item dropdown text-primary d-flex align-items-center">
                     <i className="fi fi-sr-user"></i>
@@ -101,11 +107,15 @@ export default function Header() {
                       <li>
                         <hr className="dropdown-divider" />
                       </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Log Out
-                        </a>
-                      </li>
+                      {authUser ? (
+                        <li onClick={userSignOut}>
+                          <a className="dropdown-item">Logout</a>{" "}
+                        </li>
+                      ) : (
+                        <li onClick={userSignInWithGoogle}>
+                          <a className="dropdown-item">Login</a>
+                        </li>
+                      )}
                     </ul>
                   </li>
                 </ul>

@@ -1,6 +1,53 @@
+import { useEffect,useState } from "react";
 import RecipeCard from "../components/RecipeCard";
 
 export default function ChangeMeal() {
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
+  const [recipes, setRecipes] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categoryEndpoint = 'http://localhost:8800/categories'; 
+        const categoryResponse = await fetch(categoryEndpoint);
+        
+        if (!categoryResponse.ok) {
+          throw new Error(`HTTP error! Status: ${categoryResponse.status}`);
+        }
+
+        const categoryData = await categoryResponse.json();
+        setCategories(categoryData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    const fetchRecipes = async () => {
+      try {
+        const recipeEndpoint = 'http://localhost:8800/recipes';
+        const recipeResponse = await fetch(recipeEndpoint);
+        
+        if (!recipeResponse.ok) {
+          throw new Error(`HTTP error! Status: ${recipeResponse.status}`);
+        }
+
+        const allRecipes = await recipeResponse.json();
+console.log("parseInt(selectedCategory)", selectedCategory.id,selectedCategory)
+        // Filter recipes based on the selected category
+        const filteredRecipes = selectedCategory === "ALL"
+          ? allRecipes
+          : allRecipes.filter(recipe => recipe.categoryId == selectedCategory);
+
+        setRecipes(filteredRecipes);
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+      }
+    };
+
+    fetchCategories();
+    fetchRecipes();
+  }, [selectedCategory]); 
   return (
     <div className="bg-doodle py-md-5 py-3">
       <div className="container my-md-5 my-3">
@@ -40,35 +87,31 @@ export default function ChangeMeal() {
               </div>
             </div>
             <div className="row mb-5 recipe-category-wrapper aj-drop-shadow">
-              <div className="col-12">
-                <ul className="recipe-categories pt-2">
-                  <li>ALL</li>
-                  <li>Chinese</li>
-                  <li>Thai</li>
-                  <li className="selected">Seasonal</li>
-                  <li>Continental</li>
-                  <li>Mexican</li>
-                  <li>Italian</li>
-                  <li>Arabian</li>
-                  <li>B.B.Q</li>
-                  <li>Region</li>
-                </ul>
-              </div>
-            </div>
-            <div className="row">
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-            </div>
+        <div className="col-12">
+          <ul className="recipe-categories pt-2">
+            <li
+              className={selectedCategory === "ALL" ? "selected" : ""}
+              onClick={() => setSelectedCategory("ALL")}
+            >
+              ALL
+            </li>
+            {categories.map(category => (
+              <li
+                key={category.id}
+                className={selectedCategory === category.id ? "selected" : ""}
+                onClick={() => setSelectedCategory(category.id)}
+              >
+                {category.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="row">
+        {recipes.map(recipe => (
+       <RecipeCard  categoryName={recipe.categoryName} recipeName={recipe.title} />
+        ))}
+      </div>
           </div>
         </div>
       </div>
