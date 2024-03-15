@@ -1,7 +1,17 @@
-import { useAuth } from "../auth/authContext";
+import { useAuth } from "../auth_v2/authContext";
 
 export default function Header() {
-  const { authUser, userSignOut, userSignInWithGoogle } = useAuth();
+  // const { authUser, userSignOut, userSignInWithGoogle } = useAuth();
+  const { login, user, logout } = useAuth(); // Access login function from auth context
+
+  const handleLogin = () => {
+    // Call the login function when the login button is clicked
+    login({ email: 'hassan90785@gmail.com', password: 'hassan' });
+  };
+  const handleLogout = () => {
+    // Call the login function when the login button is clicked
+    logout();
+  };
   return (
     <div className="aj-drop-shadow background-white">
       <div className="container">
@@ -107,12 +117,12 @@ export default function Header() {
                       <li>
                         <hr className="dropdown-divider" />
                       </li>
-                      {authUser ? (
-                        <li onClick={userSignOut}>
+                      {user ? (
+                        <li onClick={handleLogout}>
                           <a className="dropdown-item">Logout</a>{" "}
                         </li>
                       ) : (
-                        <li onClick={userSignInWithGoogle}>
+                        <li onClick={handleLogin}>
                           <a className="dropdown-item">Login</a>
                         </li>
                       )}
