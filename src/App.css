@@ -1,0 +1,569 @@
+@import "@flaticon/flaticon-uicons/css/all/all";
+
+:root {
+  /*  colors  */
+  --theme-primary: #ff6900;
+  --theme-secondary: #f9c349;
+  --theme-accent: #ffb100;
+  --theme-body: #282828;
+  /*	typography*/
+  --theme-font: "Montserrat", sans-serif;
+}
+
+body {
+  background: #f8f8f8;
+  font-family: var(--theme-font);
+  font-size: 16px;
+  color: var(--theme-body);
+}
+
+.bg-doodle {
+  background-image: url("/page-bg.png");
+  background-size: auto;
+  background-position: center;
+  background-repeat: repeat;
+}
+
+.bg-vegetables {
+  background-image: url("/bg-vegetables.png");
+  background-size: auto;
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+.aj-drop-shadow {
+  box-shadow: 0px 0px 10px rgba(159, 159, 159, 0.3);
+}
+
+.min-height-600 {
+  min-height: 600px;
+}
+
+.text-primary {
+  color: var(--theme-primary) !important;
+}
+
+.text-secondary {
+  color: var(--theme-secondary) !important;
+}
+
+.text-accent {
+  color: var(--theme-accent) !important;
+}
+
+.text-body {
+  color: var(--theme-body) !important;
+}
+
+.background-primary {
+  background-color: var(--theme-primary) !important;
+}
+
+.background-secondary {
+  background-color: var(--theme-secondary) !important;
+}
+
+.background-white {
+  background-color: #ffffff !important;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 26px;
+  margin-bottom: 0px;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  margin-bottom: 0px;
+}
+
+.body-text-small {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.body-text-extra-small {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+a {
+  text-decoration: none;
+  color: var(--theme-primary);
+  font-weight: 600;
+}
+
+.aj-site-logo {
+  color: var(--theme-primary) !important;
+  text-transform: uppercase;
+  font-size: 24px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.border-right-divider {
+  border-right: 2px dashed var(--theme-body);
+}
+
+.border-left-divider {
+  border-left: 2px dashed var(--theme-body);
+}
+
+.text-divider {
+  display: flex;
+  align-items: center;
+}
+
+.text-divider::before,
+.text-divider::after {
+  flex: 1;
+  content: "";
+  padding: 1px;
+  background-color: var(--theme-accent);
+  margin: 10px;
+}
+
+.aj-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: var(--theme-accent);
+  padding: 0px 14px;
+  border-radius: 100px;
+}
+
+/*//////////////////////////////////*/
+/*//////////// Buttons ////////////*/
+
+.btn-primary {
+  color: #ffffff;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
+  border-radius: 0px;
+  max-width: 160px;
+  width: 160px;
+  padding: 8px 12px;
+}
+
+.btn-transparent {
+  background: none;
+  padding: 0px;
+  margin: 0px;
+  line-height: 1;
+  border: none;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--theme-accent);
+  border-color: var(--theme-accent);
+}
+
+.btn-primary.background-secondary:hover,
+.btn-primary.background-secondary:focus {
+  background-color: var(--theme-accent) !important;
+  border-color: var(--theme-accent) !important;
+}
+
+.btn-transparent:hover,
+.btn-transparent:focus {
+  color: var(--theme-accent) !important;
+}
+
+.aj-button {
+  width: auto !important;
+  max-width: none !important;
+  padding: 8px 60px;
+}
+
+.aj-button.w-100 {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.btn-transparent.aj-button {
+  background: none;
+  color: var(--theme-primary);
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: transparent;
+  border: 1px solid var(--theme-primary);
+  border-radius: 0px;
+  max-width: 160px;
+  width: 160px;
+  padding: 8px 12px;
+  line-height: 1.6;
+}
+
+.btn-transparent.aj-button:hover,
+.btn-transparent.aj-button:focus {
+  background-color: var(--theme-accent);
+  border-color: var(--theme-accent);
+  color: #fff !important;
+}
+
+.btn-close {
+  background: transparent;
+  color: var(--theme-accent);
+  font-size: 24px;
+  margin: 0px;
+  line-height: 1;
+  opacity: 1;
+  padding: 0;
+}
+
+.btn-close:hover {
+  color: var(--theme-primary);
+}
+
+.google-button {
+  background-color: #1a73e8;
+  border-color: #1a73e8;
+  font-size: 12px;
+}
+
+.apple-button {
+  background-color: #000000;
+  border-color: #000000;
+  font-size: 12px;
+}
+
+.facebook-button {
+  background-color: #1877f2;
+  border-color: #1877f2;
+  font-size: 12px;
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*///////// Form Elements /////////*/
+
+.form-control {
+  border: 2px solid var(--theme-primary);
+  border-radius: 0;
+  font-size: 14px;
+  padding: 8px 20px;
+  color: var(--theme-body);
+  font-weight: 500;
+}
+
+.form-check-input[type="checkbox"] {
+  border-radius: 0;
+  border: 2px solid var(--theme-primary);
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*//////////// HEADER /////////////*/
+
+.navbar-nav .nav-item .nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
+  color: var(--theme-body);
+}
+
+.navbar-nav .nav-item .nav-link.active,
+.navbar-nav .nav-item .nav-link:hover {
+  color: var(--theme-primary);
+}
+
+.navbar-nav .dropdown i {
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.navbar-nav .dropdown i:before {
+  line-height: 18px;
+}
+
+.navbar-nav .dropdown .dropdown-menu {
+  padding: 0px;
+  border: none;
+  border-radius: 0px;
+}
+
+.navbar-nav .dropdown .dropdown-menu .dropdown-item {
+  font-size: 14px;
+  font-weight: 400;
+  padding: 12px 16px;
+}
+
+.navbar-nav .dropdown .dropdown-menu .dropdown-divider {
+  margin: 0px 8px;
+}
+
+.navbar-nav .dropdown .dropdown-menu .dropdown-item:focus,
+.navbar-nav .dropdown .dropdown-menu .dropdown-item:hover {
+  background-color: var(--theme-primary);
+  color: #ffffff;
+  font-weight: 500;
+}
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*//////////// FOOTER /////////////*/
+
+.footer-menu {
+  list-style: none;
+  padding: 0px;
+}
+
+.footer-menu li a {
+  color: var(--theme-body);
+  text-decoration: none;
+}
+
+.footer-menu li a:hover,
+.footer-menu li.active a,
+.social-icon-menu li a:hover {
+  color: var(--theme-primary);
+  font-weight: 500;
+}
+
+.social-icon-menu li {
+  display: inline-block;
+  padding-right: 20px;
+}
+
+.social-icon-menu li a {
+  font-size: 22px;
+}
+
+.copyright-bar p,
+.copyright-bar ul {
+  margin-bottom: 0px;
+}
+
+.copyright-menu li {
+  display: inline-block;
+  padding-left: 20px;
+}
+
+.copyright-menu li a {
+  color: #ffffff;
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*/////////// Order Flow //////////*/
+
+.order-progress-bar .progress-bar-status {
+  list-style: none;
+  margin-bottom: 0px;
+}
+
+.order-progress-bar .progress-bar-status li {
+  display: inline-block;
+  padding: 0px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+}
+
+.order-progress-bar .progress-bar-status li.status-divider hr {
+  margin: 0rem 0;
+  color: var(--theme-secondary);
+  border: 2px solid;
+  width: 30px;
+  margin-bottom: 2px;
+  opacity: 1;
+}
+
+.order-progress-bar .progress-bar-status li i {
+  font-size: 16px;
+  line-height: 16px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.order-progress-bar .progress-bar-status li.completed {
+  color: var(--theme-primary);
+}
+
+.order-progress-bar .progress-bar-status li.active {
+  color: var(--theme-accent);
+}
+
+#recipeSelection.aj-grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-auto-columns: auto;
+  row-gap: 10px;
+  column-gap: 10px;
+}
+
+#recipeSelection .recipe-name,
+.plan-size .plan-size-label {
+  color: var(--theme-body);
+  font-size: 14px;
+  font-weight: 500;
+  background-color: transparent;
+  border-color: var(--theme-body);
+  border-radius: 0px;
+  max-width: 100%;
+  width: 100%;
+  padding: 6px 12px;
+}
+
+#recipeSelection input[type="checkbox"]:checked + .recipe-name,
+.plan-size input[type="radio"]:checked + .plan-size-label {
+  color: #ffffff;
+  background-color: var(--theme-primary);
+  border-color: var(--theme-primary);
+}
+
+.plan-size input[type="radio"]:checked + .plan-size-label {
+  border-color: var(--theme-body);
+}
+
+#recipeSelection .recipe-name:hover,
+#recipeSelection input[type="checkbox"]:checked + .recipe-name:hover,
+.plan-size .plan-size-label:hover,
+.plan-size input[type="radio"]:checked + .plan-size-label:hover {
+  color: #ffffff;
+  background-color: var(--theme-accent);
+  border-color: var(--theme-accent);
+}
+
+#recipeSelection input[type="checkbox"],
+.plan-size input[type="radio"] {
+  display: none;
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*//////////// LANDING ////////////*/
+
+.banner-section {
+  background-image: url("/home-bg.png");
+  min-height: 700px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.banner-section h1 {
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 64px;
+  color: #ffffff;
+}
+
+.banner-section h2 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 32px;
+  color: #ffffff;
+}
+
+.why-us-section {
+  background-image: url("/section-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cta-section {
+  background-image: url("/cta-bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*//////////// MY MENU ////////////*/
+
+.upcoming-date-wrapper .upcoming-date {
+  display: inline-block;
+  padding: 4px 24px;
+  border: 3px solid var(--theme-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+
+.upcoming-date-wrapper .upcoming-date.active,
+.upcoming-date-wrapper .upcoming-date:hover {
+  background: var(--theme-accent);
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*////////// CHANGE MEAL //////////*/
+
+.recipe-category-wrapper {
+  background-color: #ffffff;
+  padding: 6px 20px;
+}
+
+.recipe-category-wrapper .recipe-categories {
+  padding: 0px;
+  margin: 0px;
+  display: flex;
+  justify-content: space-between;
+  overflow-x: scroll;
+}
+
+.recipe-category-wrapper .recipe-categories li {
+  list-style: none;
+  margin: 0px 26px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.recipe-category-wrapper .recipe-categories li.selected,
+.recipe-category-wrapper .recipe-categories li:hover {
+  font-weight: 600;
+  color: var(--theme-primary);
+}
+
+.recipe-category-wrapper .recipe-categories::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+  background: transparent;
+}
+
+.recipe-category-wrapper
+  .recipe-categories::-webkit-scrollbar-thumb:horizontal {
+  background: var(--theme-accent);
+  border-radius: 10px;
+}
+
+/*///////////////////////////////////*/
+
+/*//////////////////////////////////*/
+/*///////////// POPUP /////////////*/
+
+.modal-content {
+  border-radius: 0px;
+}
+
+.modal-body {
+  padding: 10px 20px;
+  background-image: url("/popup-bg.png");
+  background-size: auto;
+  background-position: bottom right;
+  background-repeat: no-repeat;
+}
+
+#planSettingPopup .modal-body,
+#cancelSubscriptionPopup .modal-body {
+  background-image: none;
+}
