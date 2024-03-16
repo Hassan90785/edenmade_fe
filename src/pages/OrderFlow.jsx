@@ -9,12 +9,19 @@ import {
     updateCustomerDetails
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
+import {loadStripe} from "@stripe/stripe-js";
 
 export default function OrderFlow() {
     const [selectPlanFlow, setselectPlanFlow] = useState(true);
     const [registerFlow, setRegisterFlow] = useState(false);
     const [detailFlow, setDetailFlow] = useState(false);
     const [checkoutFlow, setCheckoutFlow] = useState(false);
+    const [currentState, setCurrentState] = useState({
+        step1: 1,
+        step2: 0,
+        step3: 0,
+        step4: 0,
+    });
     const recipePerWeekOptions = getRecipePerWeek();
     const [categories, setCategories] = useState([]);
     const peopleOptions = getPeoplePerWeek();
@@ -50,6 +57,16 @@ export default function OrderFlow() {
         email: "",
         password: ""
     });
+
+    const updateCurrentState = (step) => {
+        setCurrentState({
+            ...currentState,
+            step1: step === 1 ? 1 : 0,
+            step2: step === 2 ? 1 : 0,
+            step3: step === 3 ? 1 : 0,
+            step4: step === 4 ? 1 : 0,
+        });
+    };
     // Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
@@ -157,6 +174,22 @@ export default function OrderFlow() {
             } catch (error) {
                 console.error('Error during sign-up:', error);
             }
+        }
+    };
+
+    const makePayment = async () => {
+        const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
+        const {error} = await stripe.redirectToCheckout({
+            mode: 'payment',
+            lineItems: [
+                {price: 'price_1Osk9vANqKE86m4z7yQ8SRj1', quantity: 1}, // Replace with your actual price ID
+            ],
+            successUrl: `${window.location.origin}/success`,
+            cancelUrl: `${window.location.origin}/cancel`,
+        });
+
+        if (error) {
+            console.error('Error redirecting to checkout:', error);
         }
     };
     return (
@@ -554,6 +587,7 @@ export default function OrderFlow() {
                                 <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
 
                                     <button
+                                        onClick={makePayment}
                                         className="w-100 btn btn-primary aj-button body-text-small fw-700 background-secondary border-0">
                                         <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i>{" "}
                                         Continue with Stripe
