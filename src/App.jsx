@@ -11,7 +11,8 @@ import MyMenu from "./pages/MyMenu";
 import OrderFlow from "./pages/OrderFlow";
 import { AuthProvider } from "./auth_v2/authContext";
 import config from "./auth_v2/config";
-
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 function App({ routes }) {
   return (
       <AuthProvider config={config}>
@@ -24,7 +25,10 @@ function App({ routes }) {
             <Route path="change-meal" element={<ChangeMeal />} />
           </Routes>
         </BrowserRouter>
+          <ToastContainer/>
+
       </AuthProvider>
+
   );
 }
 
