@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../auth_v2/config.js";
-
+import {toast} from "react-toastify";
 export const getCategories = async () => {
     try {
         // Make HTTP POST request to your backend for login
@@ -11,27 +11,43 @@ export const getCategories = async () => {
         console.log('getCategories:', data)
         return data;
     } catch (error) {
+        toast.error("Getting Categories Failed!")
         // Handle login error, such as displaying error message
         console.error("Categories failed:", error);
     }
 };
 
 
-export const getSpiceLevels = async () => {
+export const signup = async (req) => {
     try {
-        // Make HTTP POST request to your backend for login
-        const response = await axios.post(`${config.BaseUrl}/categories`);
-
-        // Assuming the response contains user data upon successful login
-        const {data} = response.data;
-        console.log('getCategories:', data)
-        return data;
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/auth/signup`, req);
+        // Assuming the response contains user data upon successful signup
+        const { data } = response.data;
+        console.log('signup:', data);
+        return data; // Return data in case of success
     } catch (error) {
-        // Handle login error, such as displaying error message
-        console.error("Categories failed:", error);
+        // Handle signup error, such as displaying error message
+        toast.error("Signup  Failed!")
+        console.error("signup failed:", error);
+        throw error; // Rethrow the error for the caller to handle
     }
 };
-
+export const updateCustomerDetails = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/auth/updateCustomerDetails`, req);
+        // Assuming the response contains user data upon successful signup
+        const { data } = response.data;
+        console.log('signup:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Updating Customer Details  Failed!")
+        console.error("signup failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
 
 export const getPeoplePerWeek = () => {
     return [

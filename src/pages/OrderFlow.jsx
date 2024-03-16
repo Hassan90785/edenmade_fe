@@ -1,6 +1,13 @@
 import {useEffect, useState} from "react";
 import ProductSummary from "../components/ProductSummary";
-import {getCategories, getPeoplePerWeek, getPrices, getRecipePerWeek} from "../rest_apis/restApi.jsx";
+import {
+    getCategories,
+    getPeoplePerWeek,
+    getPrices,
+    getRecipePerWeek,
+    signup,
+    updateCustomerDetails
+} from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 
 export default function OrderFlow() {
@@ -8,21 +15,57 @@ export default function OrderFlow() {
     const [registerFlow, setRegisterFlow] = useState(false);
     const [detailFlow, setDetailFlow] = useState(false);
     const [checkoutFlow, setCheckoutFlow] = useState(false);
-
     const recipePerWeekOptions = getRecipePerWeek();
     const [categories, setCategories] = useState([]);
     const peopleOptions = getPeoplePerWeek();
     const prices = getPrices();
+    const [user, setUser] = useState({
+        customer_id: null,
+        username: null,
+        email: "",
+        password: "",
+        is_google: 0,
+        is_apple: 0,
+        is_facebook: 0,
+        otp: null,
+        first_name: null,
+        last_name: null,
+        date_of_birth: null,
+        gender: null,
+        address: null,
+        city: null,
+        phone_number: null,
+        state: null,
+        country: null,
+        postal_code: null
+    });
 
     const [orderFlow, setOrderFlow] = useState({
         selectedPeople: "",
         selectedRecipePerWeek: "",
         selectedRecipes: [],
-        totalPrice:0
+        totalPrice: 0
+    });
+    const [userLogin, setUserLogin] = useState({
+        email: "",
+        password: ""
     });
     // Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
+            ...prevState,
+            [prop]: value
+        }));
+    };
+    const updateUserDetails = (prop, value) => {
+        setUser(prevState => ({
+            ...prevState,
+            [prop]: value
+        }));
+    };
+    // Function to update order flow properties
+    const updateUserLogin = (prop, value) => {
+        setUserLogin(prevState => ({
             ...prevState,
             [prop]: value
         }));
@@ -82,6 +125,39 @@ export default function OrderFlow() {
         // All required fields are filled, proceed to the next step
         setselectPlanFlow(false);
         setRegisterFlow(true);
+    };
+    const goToStep4 = async () => {
+        // Validate that all required fields are filled
+        if (!user.first_name || !user.last_name || !user.phone_number || !user.address) {
+            toast.error("Please fill in all required fields");
+            console.error("Please fill in all required fields");
+        } else {
+            const data = await updateCustomerDetails(user);
+            console.log('Customer Updated:', data);
+            toast.success("Customer details updated Successfully");
+            setDetailFlow(false);
+            setCheckoutFlow(true);
+        }
+
+    };
+    const goToStep3 = async () => {
+        // Validate that all required fields are filled
+        if (!userLogin.email || !userLogin.password) {
+            // If any required field is missing, show an error or handle it as needed
+            toast.error("Please fill in all required fields");
+            console.error("Please fill in all required fields");
+        } else {
+            try {
+                const data = await signup(userLogin);
+                console.log('SignUp Success:', data);
+                toast.success("SignUp User Successfully");
+                setUser(data);
+                setRegisterFlow(false);
+                setDetailFlow(true);
+            } catch (error) {
+                console.error('Error during sign-up:', error);
+            }
+        }
     };
     return (
         <div className="container my-5">
@@ -220,10 +296,10 @@ export default function OrderFlow() {
                                             </div>))}
                                         </div>
                                     </div>
-                                    <ProductSummary  selectedPeople={orderFlow.selectedPeople}
-                                                     selectedRecipePerWeek={orderFlow.selectedRecipePerWeek}
-                                                     updateTotalPrice={updateTotalPrice}
-                                                     selectedRecipes={orderFlow.selectedRecipes}/>
+                                    <ProductSummary selectedPeople={orderFlow.selectedPeople}
+                                                    selectedRecipePerWeek={orderFlow.selectedRecipePerWeek}
+                                                    updateTotalPrice={updateTotalPrice}
+                                                    selectedRecipes={orderFlow.selectedRecipes}/>
                                 </div>
                             </div>
                             <div className="text-center mt-4">
@@ -237,27 +313,293 @@ export default function OrderFlow() {
                         </div>)}
 
                     {/* REGISTER */}
-                    {registerFlow && (<div
-                        id="registerOrderFlow"
-                        className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
-                    >
-                        <h1 className="text-center">Register Your Account</h1>
-                        <div className="row mt-5">
-                            <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
-                                <p className="body-text-extra-small mb-2">
-                                    You&apos;ve Selected
-                                </p>
-                                <h2 className="">
-                                    4 meals for 3 people per week which is 12 total servings
-                                </h2>
-                                <div className="text-end d-none d-md-block">
-                                    <img src="/meals-image.png"/>
+                    {registerFlow && (
+                        <div
+                            id="registerOrderFlow"
+                            className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
+                        >
+                            <h1 className="text-center">Register Your Account</h1>
+                            <div className="row mt-5">
+                                <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
+                                    <p className="body-text-extra-small mb-2">
+                                        You&apos;ve Selected
+                                    </p>
+                                    <h2 className="">
+                                        {orderFlow.selectedRecipePerWeek} meals for {orderFlow.selectedPeople} people
+                                        per week which
+                                        is {orderFlow.selectedRecipePerWeek * orderFlow.selectedPeople} total servings
+                                    </h2>
+                                    <div className="text-end d-none d-md-block">
+                                        <img src="/meals-image.png"/>
+                                    </div>
+                                </div>
+                                {" "}
+                                <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
+                                    <input
+                                        required
+                                        type="email"
+                                        id="regEmail"
+                                        name="email"
+                                        placeholder="Your Email Address"
+                                        className="form-control mb-3"
+                                        value={userLogin.email} // Bind the value to the state
+                                        onChange={(e) => updateUserLogin('email', e.target.value)} // Handle input changes
+                                    />
+                                    <input
+                                        required
+                                        type="password"
+                                        id="regPass"
+                                        name="password"
+                                        placeholder="Password"
+                                        className="form-control mb-3"
+                                        value={userLogin.password} // Bind the value to the state
+                                        onChange={(e) => updateUserLogin('password', e.target.value)} // Handle input changes
+                                    />
+                                    <div className="form-check mb-3">
+                                        {/* Other form elements... */}
+                                    </div>
+
+                                    <button
+                                        className="w-100 btn btn-primary aj-button body-text-small fw-700"
+                                        onClick={goToStep3}
+                                    >
+                                        Continue
+                                    </button>
+                                </div>
+                                <div className="col-12 px-3 py-3 my-0 py-md-0">
+                                    <div className="text-divider body-text-extra-small">OR</div>
+                                </div>
+                                <div className="col-12 px-md-5 px-3 py-3">
+                                    <div className="row">
+                                        <div className="col-12 col-md-4 mb-2">
+                                            <button
+                                                className="w-100 btn btn-primary aj-button google-button fw-700 px-2 lh-1"
+                                                // onClick={userSignInWithGoogle}
+                                            >
+                                                <i className="fi fi-brands-google fs-6 me-2 align-middle lh-1"></i>
+                                                Continue with Google
+                                            </button>
+                                        </div>
+                                        <div className="col-12 col-md-4 mb-2">
+                                            <button
+                                                className="w-100 btn btn-primary aj-button apple-button fw-700 px-2 lh-1">
+                                                <i className="fi fi-brands-apple fs-6 me-2 align-middle lh-1"></i>
+                                                Continue with Apple
+                                            </button>
+                                        </div>
+                                        <div className="col-12 col-md-4 mb-2">
+                                            <button
+                                                className="w-100 btn btn-primary aj-button facebook-button fw-700 px-2 lh-1"
+                                                // onClick={userSignInWithFacebook}
+                                            >
+                                                <i className="fi fi-brands-facebook fs-6 me-2 align-middle lh-1"></i>
+                                                Continue with Facebook
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-12 px-3 py-3">
+                                    <div className="row">
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-sr-heart fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                Something for everyone
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                Set dietary preferences then just sit back and let us do
+                                                the hard yards as we deliver everything you&apos;ll need
+                                                to cook delicious dinners right to your door.
+                                            </p>
+                                        </div>
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-sr-restaurant fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                Near endless variety
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                Each week, our chefs curate 20 deliciously simple
+                                                recipes featuring a variety of ingredients and flavors.
+                                            </p>
+                                        </div>
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-ss-soup fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                Little effort, big reward
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                All you need to do is follow our step-by-step recipe
+                                                cards and you&apos;ll be eating picture perfect dinners
+                                                that&apos;ll impress everyone every night.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            {" "}
-
+                            <div className="text-center mt-4"></div>
                         </div>
-                    </div>)}
+                    )}
+                    {/* Details */}
+                    {detailFlow && (
+                        <div
+                            id="detailOrderFlow"
+                            className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
+                        >
+                            <h1 className="text-center">Let&apos;s Save Your Details</h1>
+                            <div className="row mt-5">
+                                <div className="col-12 px-md-5 px-3 my-5">
+                                    <div className="row">
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="text"
+                                                id="deatilFirstName"
+                                                name="first_name"
+                                                placeholder="First Name*"
+                                                className="form-control mb-3"
+                                                required
+                                                onChange={(e) =>
+                                                    updateUserDetails("first_name", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="text"
+                                                id="deatilLastName"
+                                                name="last_name"
+                                                placeholder="Last Name*"
+                                                className="form-control mb-3"
+                                                required
+                                                onChange={(e) =>
+                                                    updateUserDetails("last_name", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="tel"
+                                                id="deatilPhone"
+                                                name="phone_number"
+                                                placeholder="Phone Number"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    updateUserDetails("phone_number", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="text"
+                                                id="deatilAddress"
+                                                name="address"
+                                                placeholder="Address"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    updateUserDetails("address", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="text"
+                                                id="deatilCity"
+                                                name="city"
+                                                placeholder="City"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    updateUserDetails("city", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12">
+                                            <input
+                                                type="text"
+                                                id="deatilZip"
+                                                name="postal_code"
+                                                placeholder="Postal Code"
+                                                className="form-control mb-3"
+                                                onChange={(e) =>
+                                                    updateUserDetails("postal_code", e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                        <div className="col-md-6 col-12 mx-auto mt-3">
+                                            <button
+                                                className="w-100 btn btn-primary aj-button body-text-small fw-700"
+                                                onClick={goToStep4}
+                                            >
+                                                Continue
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-12 px-md-5 px-3">
+                                    <ProductSummary selectedPeople={orderFlow.selectedPeople}
+                                                    selectedRecipePerWeek={orderFlow.selectedRecipePerWeek}
+                                                    updateTotalPrice={updateTotalPrice}
+                                                    selectedRecipes={orderFlow.selectedRecipes}/>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+
+                    {/* Checkout */}
+                    {checkoutFlow && (
+                        <div
+                            id="checkoutOrderFlow"
+                            className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
+                        >
+                            <h1 className="text-center">Payment Details</h1>
+                            <div className="row mt-5">
+                                <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
+
+                                    <button
+                                        className="w-100 btn btn-primary aj-button body-text-small fw-700 background-secondary border-0">
+                                        <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i>{" "}
+                                        Continue with Stripe
+                                    </button>
+                                </div>
+                                <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
+                                    <ProductSummary selectedPeople={orderFlow.selectedPeople}
+                                                    selectedRecipePerWeek={orderFlow.selectedRecipePerWeek}
+                                                    updateTotalPrice={updateTotalPrice}
+                                                    selectedRecipes={orderFlow.selectedRecipes}/>
+                                </div>
+                                <div className="col-12 px-3 py-3 mt-0 mt-md-4">
+                                    <div className="row">
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-sr-sack-dollar fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                Save money
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                Spend less on dinner every week.
+                                            </p>
+                                        </div>
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-sr-surprise fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                No surprises
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                Pause or skip to fit your schedule
+                                            </p>
+                                        </div>
+                                        <div className="col-12 col-md-4 text-center px-3 mt-3">
+                                            <i className="fi fi-br-calendar-xmark fs-4 text-primary"></i>
+                                            <p className="body-text-small fw-medium mb-1">
+                                                No commitment
+                                            </p>
+                                            <p className="body-text-extra-small mb-0">
+                                                Pause or cancel anytime
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>);
