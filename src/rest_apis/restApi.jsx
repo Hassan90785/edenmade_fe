@@ -39,12 +39,25 @@ export const updateCustomerDetails = async (req) => {
         const response = await axios.post(`${config.BaseUrl}/auth/updateCustomerDetails`, req);
         // Assuming the response contains user data upon successful signup
         const { data } = response.data;
-        console.log('signup:', data);
         return data; // Return data in case of success
     } catch (error) {
         // Handle signup error, such as displaying error message
         toast.error("Updating Customer Details  Failed!")
         console.error("signup failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const generate_stripe_subscription = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/create_subscription`, req);
+        // Assuming the response contains user data upon successful signup
+        const { data } = response;
+        console.log('generate_stripe_subscription:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Stripe subscription generation Failed!")
         throw error; // Rethrow the error for the caller to handle
     }
 };

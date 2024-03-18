@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import ProductSummary from "../components/ProductSummary";
 import {
+    generate_stripe_subscription,
     getCategories,
     getPeoplePerWeek,
     getPrices,
@@ -12,16 +13,7 @@ import {toast} from "react-toastify";
 import {loadStripe} from "@stripe/stripe-js";
 
 export default function OrderFlow() {
-    const [selectPlanFlow, setselectPlanFlow] = useState(true);
-    const [registerFlow, setRegisterFlow] = useState(false);
-    const [detailFlow, setDetailFlow] = useState(false);
-    const [checkoutFlow, setCheckoutFlow] = useState(false);
-    const [currentState, setCurrentState] = useState({
-        step1: 1,
-        step2: 0,
-        step3: 0,
-        step4: 0,
-    });
+    const [currentState, setCurrentState] = useState(1);
     const recipePerWeekOptions = getRecipePerWeek();
     const [categories, setCategories] = useState([]);
     const peopleOptions = getPeoplePerWeek();
@@ -58,15 +50,7 @@ export default function OrderFlow() {
         password: ""
     });
 
-    const updateCurrentState = (step) => {
-        setCurrentState({
-            ...currentState,
-            step1: step === 1 ? 1 : 0,
-            step2: step === 2 ? 1 : 0,
-            step3: step === 3 ? 1 : 0,
-            step4: step === 4 ? 1 : 0,
-        });
-    };
+
     // Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
@@ -91,6 +75,7 @@ export default function OrderFlow() {
         // Fetch categories when the component mounts
         fetchCategories();
     }, []);
+
 
     // Function to fetch categories
     const fetchCategories = async () => {
@@ -140,8 +125,7 @@ export default function OrderFlow() {
         }
         console.log('Order Flow: ', orderFlow)
         // All required fields are filled, proceed to the next step
-        setselectPlanFlow(false);
-        setRegisterFlow(true);
+        setCurrentState(2)
     };
     const goToStep4 = async () => {
         // Validate that all required fields are filled
@@ -152,8 +136,8 @@ export default function OrderFlow() {
             const data = await updateCustomerDetails(user);
             console.log('Customer Updated:', data);
             toast.success("Customer details updated Successfully");
-            setDetailFlow(false);
-            setCheckoutFlow(true);
+            setCurrentState(4)
+
         }
 
     };
@@ -169,8 +153,8 @@ export default function OrderFlow() {
                 console.log('SignUp Success:', data);
                 toast.success("SignUp User Successfully");
                 setUser(data);
-                setRegisterFlow(false);
-                setDetailFlow(true);
+                setCurrentState(3)
+
             } catch (error) {
                 console.error('Error during sign-up:', error);
             }
@@ -179,19 +163,71 @@ export default function OrderFlow() {
 
     const makePayment = async () => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
+        savingData();
+
+        const {priceId, productId} = await generate_stripe_subscription({
+            productName: 'edenmade_'+user.customer_id,
+            price: orderFlow.totalPrice.toFixed(2)
+        })
+        console.log('priceId: ', priceId); // Log the priceId
+        console.log('productId: ', productId); // Log the productId
+
         const {error} = await stripe.redirectToCheckout({
-            mode: 'payment',
-            lineItems: [
-                {price: 'price_1Osk9vANqKE86m4z7yQ8SRj1', quantity: 1}, // Replace with your actual price ID
-            ],
-            successUrl: `${window.location.origin}/success`,
-            cancelUrl: `${window.location.origin}/cancel`,
+            mode: 'subscription',
+            lineItems: [{
+                price: priceId, // Replace with your Price ID
+                quantity: 1,
+            }],
+            customerEmail: user.email,
+            successUrl: `${window.location.origin}/order-flow?success`,
+            cancelUrl: `${window.location.origin}/order-flow?cancel`,
         });
 
         if (error) {
             console.error('Error redirecting to checkout:', error);
         }
     };
+    const savingData = () => {
+        localStorage.setItem('currentState', JSON.stringify(currentState));
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('orderFlow', JSON.stringify(orderFlow));
+        const keys = Object.keys(localStorage);
+        console.log('keys: ', keys)
+    }
+    const retrieveFromLocalStorage = () => {
+        const storedCurrentState = localStorage.getItem('currentState');
+        const user = localStorage.getItem('user');
+        const orderFlow = localStorage.getItem('orderFlow');
+        console.log('storedCurrentState: ', storedCurrentState)
+        console.log('user: ', user)
+        console.log('orderFlow: ', orderFlow)
+        if (storedCurrentState) {
+            setCurrentState(JSON.parse(storedCurrentState));
+        }
+        if (user) {
+            setUser(JSON.parse(user));
+        }
+        if (orderFlow) {
+            setOrderFlow(JSON.parse(orderFlow));
+        }
+    }
+
+    useEffect(() => {
+        console.log('came back: ', location.pathname);
+        console.log('search: ', location.search);
+
+        if (location.pathname === '/order-flow' && location.search.includes('success')) {
+            console.log('here');
+            retrieveFromLocalStorage();
+            toast.success("Payment has been successfully made!");
+        }
+        if (location.pathname === '/order-flow' && location.search.includes('error')) {
+            retrieveFromLocalStorage();
+            toast.error("Payment Failed!");
+        }
+    }, [location.pathname, location.search]);
+
+
     return (
         <div className="container my-5">
             <div className="row">
@@ -236,7 +272,7 @@ export default function OrderFlow() {
 
                 <div className="col-12 order-flow mt-4">
                     {/* SELECT PLAN */}
-                    {selectPlanFlow && (
+                    {currentState === 1 && (
                         <div
                             id="selectPlanOrderFlow"
                             className="aj-drop-shadow background-white px-3 py-4 min-height-600"
@@ -252,7 +288,7 @@ export default function OrderFlow() {
                                         them later.
                                     </p>
                                     <form id="recipeSelection" className="aj-grid-container my-3">
-                                        {categories.map((category) => (
+                                        {categories && categories.map((category) => (
                                             <div key={category.category_id} className="aj-grid-item">
                                                 <input
                                                     type="checkbox"
@@ -288,7 +324,7 @@ export default function OrderFlow() {
                                         className="plan-size plan-size-people d-flex align-items-center justify-content-between my-3">
                                         <p className="mb-0">Number of People</p>
                                         <div className="d-flex">
-                                            {peopleOptions.map((option) => (<div key={option.id}>
+                                            {peopleOptions && peopleOptions.map((option) => (<div key={option.id}>
                                                 <input
                                                     type="radio"
                                                     id={option.id}
@@ -311,7 +347,7 @@ export default function OrderFlow() {
                                         className="plan-size plan-size-recipe d-flex align-items-center justify-content-between my-3">
                                         <p className="mb-0">Recipe per Week</p>
                                         <div className="d-flex">
-                                            {recipePerWeekOptions.map((option) => (<div key={option.id}>
+                                            {recipePerWeekOptions && recipePerWeekOptions.map((option) => (<div key={option.id}>
                                                 <input
                                                     type="radio"
                                                     id={option.id}
@@ -346,7 +382,7 @@ export default function OrderFlow() {
                         </div>)}
 
                     {/* REGISTER */}
-                    {registerFlow && (
+                    {currentState === 2 && (
                         <div
                             id="registerOrderFlow"
                             className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
@@ -472,7 +508,7 @@ export default function OrderFlow() {
                         </div>
                     )}
                     {/* Details */}
-                    {detailFlow && (
+                    {currentState === 3 && (
                         <div
                             id="detailOrderFlow"
                             className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
@@ -577,7 +613,7 @@ export default function OrderFlow() {
 
 
                     {/* Checkout */}
-                    {checkoutFlow && (
+                    {currentState === 4 && (
                         <div
                             id="checkoutOrderFlow"
                             className="aj-drop-shadow background-white px-md-5 px-3 py-4 min-height-600"
