@@ -33,6 +33,21 @@ export const signup = async (req) => {
         throw error; // Rethrow the error for the caller to handle
     }
 };
+export const getOrderDetailsByCustomer = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.get(`${config.BaseUrl}/orders/order`, req);
+        // Assuming the response contains user data upon successful signup
+        const { data } = response.data;
+        console.log('getOrderDetailsByCustomer:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("getOrderDetailsByCustomer  Failed!")
+        console.error("getOrderDetailsByCustomer failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
 export const updateCustomerDetails = async (req) => {
     try {
         // Make HTTP POST request to your backend for signup

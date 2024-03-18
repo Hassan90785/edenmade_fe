@@ -11,8 +11,11 @@ import {
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import {loadStripe} from "@stripe/stripe-js";
+import config from "../auth_v2/config.js";
+import {useNavigate} from "react-router-dom";
 
 export default function OrderFlow() {
+    const navigate = useNavigate();
     const [currentState, setCurrentState] = useState(1);
     const recipePerWeekOptions = getRecipePerWeek();
     const [categories, setCategories] = useState([]);
@@ -38,7 +41,9 @@ export default function OrderFlow() {
         country: null,
         postal_code: null
     });
-
+    const [ws, setWs] = useState(null);
+    const [message, setMessage] = useState('');
+    const [orderDetails, setOrderDetails] = useState(null);
     const [orderFlow, setOrderFlow] = useState({
         selectedPeople: "",
         selectedRecipePerWeek: "",
@@ -49,9 +54,59 @@ export default function OrderFlow() {
         email: "",
         password: ""
     });
+    useEffect(() => {
+        const newWs = new WebSocket(config.WssUrl); // Replace with your WebSocket server URL
+        console.log('seeting wss', newWs)
+        setWs(newWs);
 
+        return () => {
+            // Clean up WebSocket connection when component unmounts
+            // setTimeout(() => {
+            console.log('closing')
+            newWs.close();
+            // }, 5000)
+        };
+    }, []);
+    useEffect(() => {
+        if (!ws) {
+            return;
+        }
+        // Handle WebSocket open event
+        ws.onopen = () => {
+            console.log('WebSocket connection opened');
+            if (location.pathname === '/order-flow' && location.search.includes('success')) {
+                retrieveFromLocalStorage();
+                toast.success("Payment has been successfully made!");
+            }
+            if (location.pathname === '/order-flow' && location.search.includes('error')) {
+                retrieveFromLocalStorage();
+                toast.error("Payment Failed!");
+            }
+        };
+        // Handle incoming messages from the WebSocket server
+        ws.onmessage = (event) => {
+            const resp = JSON.parse(event.data)
+            console.log('user:', user)
+            // if (resp && resp.customer_id === user.customer_id) {
+            setOrderDetails(resp)
+            toast.success("Order has been successfully placed!");
+            navigate('/change-meal');
+            // }
+            console.log('resp', resp)
+            setMessage(resp);
+        };
 
-    // Function to update order flow properties
+        // Handle WebSocket errors
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        // Handle WebSocket close event
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+    }, [ws]);
+// Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
             ...prevState,
@@ -64,7 +119,7 @@ export default function OrderFlow() {
             [prop]: value
         }));
     };
-    // Function to update order flow properties
+// Function to update order flow properties
     const updateUserLogin = (prop, value) => {
         setUserLogin(prevState => ({
             ...prevState,
@@ -77,7 +132,7 @@ export default function OrderFlow() {
     }, []);
 
 
-    // Function to fetch categories
+// Function to fetch categories
     const fetchCategories = async () => {
         try {
             const categoriesData = await getCategories();
@@ -123,7 +178,6 @@ export default function OrderFlow() {
             console.error("Please fill in all required fields");
             return;
         }
-        console.log('Order Flow: ', orderFlow)
         // All required fields are filled, proceed to the next step
         setCurrentState(2)
     };
@@ -134,7 +188,6 @@ export default function OrderFlow() {
             console.error("Please fill in all required fields");
         } else {
             const data = await updateCustomerDetails(user);
-            console.log('Customer Updated:', data);
             toast.success("Customer details updated Successfully");
             setCurrentState(4)
 
@@ -150,7 +203,6 @@ export default function OrderFlow() {
         } else {
             try {
                 const data = await signup(userLogin);
-                console.log('SignUp Success:', data);
                 toast.success("SignUp User Successfully");
                 setUser(data);
                 setCurrentState(3)
@@ -166,11 +218,9 @@ export default function OrderFlow() {
         savingData();
 
         const {priceId, productId} = await generate_stripe_subscription({
-            productName: 'edenmade_'+user.customer_id,
+            productName: 'edenmade_' + user.customer_id,
             price: orderFlow.totalPrice.toFixed(2)
         })
-        console.log('priceId: ', priceId); // Log the priceId
-        console.log('productId: ', productId); // Log the productId
 
         const {error} = await stripe.redirectToCheckout({
             mode: 'subscription',
@@ -192,40 +242,46 @@ export default function OrderFlow() {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('orderFlow', JSON.stringify(orderFlow));
         const keys = Object.keys(localStorage);
-        console.log('keys: ', keys)
     }
-    const retrieveFromLocalStorage = () => {
+    const retrieveFromLocalStorage = async () => {
         const storedCurrentState = localStorage.getItem('currentState');
-        const user = localStorage.getItem('user');
+        const customer = localStorage.getItem('user');
         const orderFlow = localStorage.getItem('orderFlow');
-        console.log('storedCurrentState: ', storedCurrentState)
-        console.log('user: ', user)
-        console.log('orderFlow: ', orderFlow)
         if (storedCurrentState) {
             setCurrentState(JSON.parse(storedCurrentState));
         }
-        if (user) {
-            setUser(JSON.parse(user));
+        if (customer) {
+            setUser(JSON.parse(customer));
         }
         if (orderFlow) {
             setOrderFlow(JSON.parse(orderFlow));
         }
+        setTimeout(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+                const message = {type: 'notification', status: 200, code: 'A', message: 'Component Loaded'}; // Define your message payload
+                ws.send(JSON.stringify(message)); // Send the message as a JSON string
+                console.log('Message sent')
+            } else {
+                console.error('WebSocket connection is not open');
+            }
+        }, 2000)
+
+        console.log('Message: ', message)
+        // const getOrder = await getOrderDetailsByCustomer(user.customer_id)
+        // console.log('getOrder: ', getOrder)
     }
 
-    useEffect(() => {
-        console.log('came back: ', location.pathname);
-        console.log('search: ', location.search);
-
-        if (location.pathname === '/order-flow' && location.search.includes('success')) {
-            console.log('here');
-            retrieveFromLocalStorage();
-            toast.success("Payment has been successfully made!");
-        }
-        if (location.pathname === '/order-flow' && location.search.includes('error')) {
-            retrieveFromLocalStorage();
-            toast.error("Payment Failed!");
-        }
-    }, [location.pathname, location.search]);
+// useEffect(() => {
+//
+//     if (location.pathname === '/order-flow' && location.search.includes('success')) {
+//         retrieveFromLocalStorage();
+//         toast.success("Payment has been successfully made!");
+//     }
+//     if (location.pathname === '/order-flow' && location.search.includes('error')) {
+//         retrieveFromLocalStorage();
+//         toast.error("Payment Failed!");
+//     }
+// }, [location.pathname, location.search]);
 
 
     return (
@@ -347,22 +403,23 @@ export default function OrderFlow() {
                                         className="plan-size plan-size-recipe d-flex align-items-center justify-content-between my-3">
                                         <p className="mb-0">Recipe per Week</p>
                                         <div className="d-flex">
-                                            {recipePerWeekOptions && recipePerWeekOptions.map((option) => (<div key={option.id}>
-                                                <input
-                                                    type="radio"
-                                                    id={option.id}
-                                                    name="recipePerWeek"
-                                                    value={option.value}
-                                                    checked={orderFlow.selectedRecipePerWeek === option.value}
-                                                    onChange={() => handleChange('week', option.value)}
-                                                />
-                                                <label
-                                                    className="plan-size-label btn btn-primary w-auto px-4"
-                                                    htmlFor={option.id}
-                                                >
-                                                    {option.label}
-                                                </label>
-                                            </div>))}
+                                            {recipePerWeekOptions && recipePerWeekOptions.map((option) => (
+                                                <div key={option.id}>
+                                                    <input
+                                                        type="radio"
+                                                        id={option.id}
+                                                        name="recipePerWeek"
+                                                        value={option.value}
+                                                        checked={orderFlow.selectedRecipePerWeek === option.value}
+                                                        onChange={() => handleChange('week', option.value)}
+                                                    />
+                                                    <label
+                                                        className="plan-size-label btn btn-primary w-auto px-4"
+                                                        htmlFor={option.id}
+                                                    >
+                                                        {option.label}
+                                                    </label>
+                                                </div>))}
                                         </div>
                                     </div>
                                     <ProductSummary selectedPeople={orderFlow.selectedPeople}
