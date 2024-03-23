@@ -17,6 +17,22 @@ export const getCategories = async () => {
     }
 };
 
+export const getRecipes = async () => {
+    try {
+        // Make HTTP POST request to your backend for login
+        const response = await axios.get(`${config.BaseUrl}/recipes`);
+
+        // Assuming the response contains user data upon successful login
+        const {data} = response.data;
+        console.log('getRecipes:', data)
+        return data;
+    } catch (error) {
+        toast.error("Getting Categories Failed!")
+        // Handle login error, such as displaying error message
+        console.error("Categories failed:", error);
+    }
+};
+
 
 export const signup = async (req) => {
     try {
@@ -36,7 +52,8 @@ export const signup = async (req) => {
 export const getOrderDetailsByCustomer = async (req) => {
     try {
         // Make HTTP POST request to your backend for signup
-        const response = await axios.get(`${config.BaseUrl}/orders/order`, req);
+        console.log('getOrderDetailsByCustomer: ',req)
+        const response = await axios.get(`${config.BaseUrl}/orders/getOrderDetails`, req);
         // Assuming the response contains user data upon successful signup
         const { data } = response.data;
         console.log('getOrderDetailsByCustomer:', data);

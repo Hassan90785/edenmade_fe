@@ -11,7 +11,6 @@ import {
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import {loadStripe} from "@stripe/stripe-js";
-import config from "../auth_v2/config.js";
 import {useNavigate} from "react-router-dom";
 
 export default function OrderFlow() {
@@ -41,7 +40,6 @@ export default function OrderFlow() {
         country: null,
         postal_code: null
     });
-    const [ws, setWs] = useState(null);
     const [message, setMessage] = useState('');
     const [orderDetails, setOrderDetails] = useState(null);
     const [orderFlow, setOrderFlow] = useState({
@@ -54,58 +52,7 @@ export default function OrderFlow() {
         email: "",
         password: ""
     });
-    useEffect(() => {
-        const newWs = new WebSocket(config.WssUrl); // Replace with your WebSocket server URL
-        console.log('seeting wss', newWs)
-        setWs(newWs);
 
-        return () => {
-            // Clean up WebSocket connection when component unmounts
-            // setTimeout(() => {
-            console.log('closing')
-            newWs.close();
-            // }, 5000)
-        };
-    }, []);
-    useEffect(() => {
-        if (!ws) {
-            return;
-        }
-        // Handle WebSocket open event
-        ws.onopen = () => {
-            console.log('WebSocket connection opened');
-            if (location.pathname === '/order-flow' && location.search.includes('success')) {
-                retrieveFromLocalStorage();
-                toast.success("Payment has been successfully made!");
-            }
-            if (location.pathname === '/order-flow' && location.search.includes('error')) {
-                retrieveFromLocalStorage();
-                toast.error("Payment Failed!");
-            }
-        };
-        // Handle incoming messages from the WebSocket server
-        ws.onmessage = (event) => {
-            const resp = JSON.parse(event.data)
-            console.log('user:', user)
-            // if (resp && resp.customer_id === user.customer_id) {
-            setOrderDetails(resp)
-            toast.success("Order has been successfully placed!");
-            navigate('/change-meal');
-            // }
-            console.log('resp', resp)
-            setMessage(resp);
-        };
-
-        // Handle WebSocket errors
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        // Handle WebSocket close event
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
-    }, [ws]);
 // Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
@@ -221,7 +168,6 @@ export default function OrderFlow() {
             productName: 'edenmade_' + user.customer_id,
             price: orderFlow.totalPrice.toFixed(2)
         })
-
         const {error} = await stripe.redirectToCheckout({
             mode: 'subscription',
             lineItems: [{
@@ -229,8 +175,10 @@ export default function OrderFlow() {
                 quantity: 1,
             }],
             customerEmail: user.email,
-            successUrl: `${window.location.origin}/order-flow?success`,
-            cancelUrl: `${window.location.origin}/order-flow?cancel`,
+            successUrl: `${window.location.origin}/my-menu?success`,
+            cancelUrl: `${window.location.origin}/order-flow?error`,
+
+
         });
 
         if (error) {
@@ -256,32 +204,9 @@ export default function OrderFlow() {
         if (orderFlow) {
             setOrderFlow(JSON.parse(orderFlow));
         }
-        setTimeout(() => {
-            if (ws.readyState === WebSocket.OPEN) {
-                const message = {type: 'notification', status: 200, code: 'A', message: 'Component Loaded'}; // Define your message payload
-                ws.send(JSON.stringify(message)); // Send the message as a JSON string
-                console.log('Message sent')
-            } else {
-                console.error('WebSocket connection is not open');
-            }
-        }, 2000)
-
-        console.log('Message: ', message)
         // const getOrder = await getOrderDetailsByCustomer(user.customer_id)
         // console.log('getOrder: ', getOrder)
     }
-
-// useEffect(() => {
-//
-//     if (location.pathname === '/order-flow' && location.search.includes('success')) {
-//         retrieveFromLocalStorage();
-//         toast.success("Payment has been successfully made!");
-//     }
-//     if (location.pathname === '/order-flow' && location.search.includes('error')) {
-//         retrieveFromLocalStorage();
-//         toast.error("Payment Failed!");
-//     }
-// }, [location.pathname, location.search]);
 
 
     return (
