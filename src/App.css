@@ -598,3 +598,14 @@ a {
 .mr-3 {
     margin-right: 3px;
 }
+.ordered_recipe{
+    border: #ff6900 2px solid !important;
+}
+.add-button{
+    bottom: 5px;
+    right:10px;
+    background: white;
+    color: #ff6900;
+    border: #ff6900;
+
+}

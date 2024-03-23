@@ -102,7 +102,7 @@ export default function Header() {
                         <hr className="dropdown-divider" />
                       </li>
                       <li>
-                        <a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="/selected-meals-cart">
                           My Cart
                         </a>
                       </li>

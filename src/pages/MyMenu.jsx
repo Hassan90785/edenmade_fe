@@ -64,7 +64,7 @@ export default function MyMenu() {
                 "items": [
                     {
                         "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
+                        "recipe_id": 30,
                         "recipe_name": "Mexican Dish 5",
                         "recipe_price": "12.99",
                         "spice_level_id": 2,
@@ -72,7 +72,7 @@ export default function MyMenu() {
                     },
                     {
                         "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
+                        "recipe_id": 5,
                         "recipe_name": "Italian Dish 3",
                         "recipe_price": "12.99",
                         "spice_level_id": 2,
@@ -80,7 +80,7 @@ export default function MyMenu() {
                     },
                     {
                         "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
+                        "recipe_id": 17,
                         "recipe_name": "Thai Dish 1",
                         "recipe_price": "12.99",
                         "spice_level_id": 2,
@@ -208,6 +208,7 @@ export default function MyMenu() {
     };
 
     useEffect(() => {
+        localStorage.removeItem('activeWeekOrderDetails')
         // Check if orderDetails and active_week are available in the JSON data
         if (orderDetails && orderDetails.active_week) {
             // Retrieve the order details for the active week
@@ -215,11 +216,13 @@ export default function MyMenu() {
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
             console.log('activeWeek: ', activeWeek)
             console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
+            const { order_details, ...cleanedOrderDetails } = orderDetails;
+            cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
             // Set the order details of active week in the state
-            setActiveWeekOrder(activeWeekOrderDetails);
-            if (activeWeekOrderDetails) {
-                console.log('setting activeWeekOrderDetails',activeWeekOrderDetails)
-                localStorage.setItem('activeWeekOrderDetails', JSON.stringify(activeWeekOrderDetails))
+            setActiveWeekOrder(cleanedOrderDetails);
+            if (cleanedOrderDetails) {
+                console.log('setting activeWeekOrderDetails',cleanedOrderDetails)
+                localStorage.setItem('activeWeekOrderDetails', JSON.stringify(cleanedOrderDetails))
             }
             getUserOrderRecipesDetail(activeWeek);
         }
@@ -331,12 +334,13 @@ export default function MyMenu() {
                     }
                 });
                 console.log('activeWeekOrderDetails::', activeWeekOrderDetails)
-
+                const { order_details, ...cleanedOrderDetails } = orderDetails;
+                cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
                 // If an active week order details is found, set it in the state
                 if (activeWeekOrderDetails) {
-                    console.log('again setting active week', activeWeekOrderDetails)
-                    setActiveWeekOrder(activeWeekOrderDetails);
-                    getUserOrderRecipesDetail(activeWeekOrderDetails.week);
+                    console.log('again setting active week', cleanedOrderDetails)
+                    setActiveWeekOrder(cleanedOrderDetails);
+                    getUserOrderRecipesDetail(cleanedOrderDetails.activeWeekOrderDetails.week);
                 }
             }
         };
@@ -364,12 +368,12 @@ export default function MyMenu() {
                                     {activeWeekOrder && (
                                         <>
                         <span className={'mr-3'}>
-                            {new Date(activeWeekOrder.delivery_date).toLocaleString('default', {weekday: 'short'})},
+                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {weekday: 'short'})},
                         </span>
                                             <span className={'mr-3'}>
-                            {new Date(activeWeekOrder.delivery_date).toLocaleString('default', {month: 'short'})}
+                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {month: 'short'})}
                         </span>
-                                            {new Date(activeWeekOrder.delivery_date).toLocaleString('default', {day: 'numeric'})}
+                                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {day: 'numeric'})}
                                         </>
                                     )}
                                 </h1>
@@ -404,7 +408,7 @@ export default function MyMenu() {
                                             <div
                                                 key={index}
                                                 className={`upcoming-date text-center mx-2 
-                ${activeWeekOrder && activeWeekOrder.week === weekDetail.week ? 'active' : 'opacity-5'}`}
+                ${activeWeekOrder && activeWeekOrder.activeWeekOrderDetails.week === weekDetail.week ? 'active' : 'opacity-5'}`}
                                                 onClick={() => handleDeliverySelection(weekDetail)}
                                             >
                 <span className="date">
@@ -453,7 +457,7 @@ export default function MyMenu() {
                             </div>
                         </div>
                         <div className="row mb-5">
-                            {activeWeekOrder && activeWeekOrder.items.map((item, index) => (
+                            {activeWeekOrder && activeWeekOrder.activeWeekOrderDetails.items.map((item, index) => (
                                 <React.Fragment key={index}>
                                     <RecipeCard categoryName={item.spice_level_name} recipeName={item.recipe_name}/>
                                 </React.Fragment>

@@ -33,6 +33,22 @@ export const getRecipes = async () => {
     }
 };
 
+export const getCategoriesWithRecipes = async () => {
+    try {
+        // Make HTTP POST request to your backend for login
+        const response = await axios.get(`${config.BaseUrl}/categories/categorieswithrecipes`);
+
+        // Assuming the response contains user data upon successful login
+        const {data} = response.data;
+        console.log('getCategoriesWithRecipes:', data)
+        return data;
+    } catch (error) {
+        toast.error("Getting Categories Failed!")
+        // Handle login error, such as displaying error message
+        console.error("Categories failed:", error);
+    }
+};
+
 
 export const signup = async (req) => {
     try {
