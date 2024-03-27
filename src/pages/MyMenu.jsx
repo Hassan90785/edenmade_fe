@@ -62,6 +62,7 @@ export default function MyMenu() {
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
             const {order_details, ...cleanedOrderDetails} = orderDetails;
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
+            localStorage.setItem('activeWeekOrder', JSON.stringify(activeWeekOrder))
             setActiveWeekOrder(cleanedOrderDetails);
 
         }
