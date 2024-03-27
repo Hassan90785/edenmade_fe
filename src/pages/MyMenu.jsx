@@ -4,8 +4,7 @@ import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
 import {useAuth} from "../auth/authContext";
 import ChangeBoxSizePopup from "../components/popups/ChangeBoxSizePopup";
-import config from "../auth_v2/config.js";
-import {toast} from "react-toastify";
+import {getOrderInfo} from "../rest_apis/restApi.jsx";
 
 
 export default function MyMenu() {
@@ -28,265 +27,25 @@ export default function MyMenu() {
         // Navigate to the "/orderFlow" route
         navigate("/selected-meals-cart");
     };
-    const [customer, setCustomer] = useState({
-        customer_id: null,
-        username: null,
-        email: "",
-        password: "",
-        is_google: 0,
-        is_apple: 0,
-        is_facebook: 0,
-        otp: null,
-        first_name: null,
-        last_name: null,
-        date_of_birth: null,
-        gender: null,
-        address: null,
-        city: null,
-        phone_number: null,
-        state: null,
-        country: null,
-        postal_code: null
-    });
+
     const [ws, setWs] = useState(null);
     const [selectedDelivery, setSelectedDelivery] = useState(null); // State for holding selected delivery
     const [activeWeekOrder, setActiveWeekOrder] = useState(null); // State for holding order details of active week
-    const [orderDetails, setOrderDetails] = useState({
-        "active_week": 1,
-        "amount_paid": 8799,
-        "customer_email": "tdest@xyz.com",
-        "customer_id": 96,
-        "customer_name": "Hassan Syed",
-        "initial_payment_id": 321231,
-        "order_details": [
-            {
-                "delivery_date": "2024-04-11T07:31:11.000Z",
-                "items": [
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 30,
-                        "recipe_name": "Mexican Dish 5",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 5,
-                        "recipe_name": "Italian Dish 3",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 17,
-                        "recipe_name": "Thai Dish 1",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    }
-                ],
-                "meals_per_week": 4,
-                "number_of_people": 4,
-                "payment_date": null,
-                "payment_id": null,
-                "week": 1
-            },
-            {
-                "delivery_date": "2024-03-28T07:31:11.000Z",
-                "items": [
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Mexican Dish 5",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 15,
-                        "recipe_name": "Italian Dish 3",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 22,
-                        "recipe_name": "Thai Dish 1",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    }
-                ],
-                "meals_per_week": 4,
-                "number_of_people": 4,
-                "payment_date": null,
-                "payment_id": null,
-                "week": 2
-            },
-            {
-                "delivery_date": "2024-04-04T07:31:11.000Z",
-                "items": [
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Mexican Dish 5",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Italian Dish 3",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Thai Dish 1",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    }
-                ],
-                "meals_per_week": 4,
-                "number_of_people": 4,
-                "payment_date": null,
-                "payment_id": null,
-                "week": 3
-            },
-            {
-                "delivery_date": "2024-04-11T07:31:11.000Z",
-                "items": [
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Mexican Dish 5",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Italian Dish 3",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    },
-                    {
-                        "created_at": "2024-03-21T07:31:11.000Z",
-                        "recipe_id": 25,
-                        "recipe_name": "Thai Dish 1",
-                        "recipe_price": "12.99",
-                        "spice_level_id": 2,
-                        "spice_level_name": "Medium"
-                    }
-                ],
-                "meals_per_week": 4,
-                "number_of_people": 4,
-                "payment_date": null,
-                "payment_id": null,
-                "week": 4
-            }
-        ],
-        "order_id": 49,
-        "subscription_id": 545454
-    });
+    const [orderDetails, setOrderDetails] = useState({});
     const [showPopup, setShowPopup] = useState(false);
-    const handleDeliverySelection = (delivery) => {
-        // Set the selected delivery
-        setSelectedDelivery(delivery);
-        // Call a function to fetch and display details of the selected delivery order
-        getUserOrderRecipesDetail(delivery.week);
-    };
-
-    useEffect(() => {
-        localStorage.removeItem('activeWeekOrderDetails')
-        // Check if orderDetails and active_week are available in the JSON data
-        if (orderDetails && orderDetails.active_week) {
-            // Retrieve the order details for the active week
-            const activeWeek = orderDetails.active_week;
-            const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
-            console.log('activeWeek: ', activeWeek)
-            console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
-            const { order_details, ...cleanedOrderDetails } = orderDetails;
-            cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
-            // Set the order details of active week in the state
-            setActiveWeekOrder(cleanedOrderDetails);
-            if (cleanedOrderDetails) {
-                console.log('setting activeWeekOrderDetails',cleanedOrderDetails)
-                localStorage.setItem('activeWeekOrderDetails', JSON.stringify(cleanedOrderDetails))
-            }
-            getUserOrderRecipesDetail(activeWeek);
-        }
-    }, [orderDetails]);
-    const getUserOrderRecipesDetail = (selectedWeek) => {
-        // Find the order detail for the selected week in the orderDetails state
-        const selectedOrder = orderDetails.order_details.find(order => order.week === selectedWeek);
-
-        // Do something with the selectedOrder, such as displaying its details or updating another state
-        // You can perform further actions here, such as updating another state or displaying the details on the UI
-    };
-    useEffect(() => {
-        const newWs = new WebSocket(config.WssUrl); // Replace with your WebSocket server URL
-        setWs(newWs);
-
-        return () => {
-            // Clean up WebSocket connection when component unmounts
-            // setTimeout(() => {
-            newWs.close();
-            // }, 5000)
-        };
-    }, []);
 
 
-    useEffect(() => {
-        if (!ws) {
-            return;
-        }
-        // Handle WebSocket open event
-        ws.onopen = () => {
-            console.log('WebSocket connection opened');
-            if (location.pathname === '/change-meal' && location.search.includes('success')) {
-                toast.success("Payment has been successfully made!");
-            }
-            if (ws.readyState === WebSocket.OPEN) {
-                const message = {type: 'notification', status: 200, code: 'A', message: 'Component Loaded from Client'}; // Define your message payload
-                ws.send(JSON.stringify(message)); // Send the message as a JSON string
-            } else {
-                console.error('WebSocket connection is not open');
-            }
-        };
-        // Handle incoming messages from the WebSocket server
-        ws.onmessage = (event) => {
-            const resp = JSON.parse(event.data);
-            // setOrderDetails(resp)
-            toast.success("Order has been successfully placed!");
-        };
-
-        // Handle WebSocket errors
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        // Handle WebSocket close event
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
-    }, [ws]);
     useEffect(() => {
         async function fetchData() {
             try {
-                // const categoriesData = await getCategories();
-                // const allRecipes = await getRecipes();
-                await retrieveFromLocalStorage();
+                let orderId = localStorage.getItem('order_id')
+                console.log('orderInfo: ', orderId)
+                if (orderId) {
+                    orderId = Number(orderId)
+                }
+                const orderInfo = await getOrderInfo({orderId: orderId})
+                console.log('orderInfo: ', orderInfo)
+                setOrderDetails(orderInfo);
             } catch (error) {
                 console.error("Error fetching categories:", error);
             }
@@ -294,10 +53,26 @@ export default function MyMenu() {
 
         fetchData();
     }, []);
-    const retrieveFromLocalStorage = async () => {
-        const customer = localStorage.getItem('user');
-        if (customer) {
-            setCustomer(JSON.parse(customer));
+
+    useEffect(() => {
+        setActiveWeek();
+    }, [orderDetails]);
+    const setActiveWeek = () => {
+        console.log('Setting up Active Week')
+        console.log('orderDetails', orderDetails)
+        console.log('active_week', orderDetails?.active_week)
+        if (orderDetails && orderDetails.active_week) {
+            // Retrieve the order details for the active week
+            const activeWeek = orderDetails.active_week;
+            const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
+            console.log('activeWeek: ', activeWeek)
+            console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
+            const {order_details, ...cleanedOrderDetails} = orderDetails;
+            console.log('cleanedOrderDetails: ', cleanedOrderDetails)
+            cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
+            // Set the order details of active week in the state
+            setActiveWeekOrder(cleanedOrderDetails);
+
         }
     }
     const addSuffix = (day) => {
@@ -314,39 +89,10 @@ export default function MyMenu() {
         }
     };
 
-    useEffect(() => {
-        // Function to find the active week order details
-        const findActiveWeekOrder = () => {
-            if (orderDetails && orderDetails.order_details) {
-                let activeWeekOrderDetails = null;
-                let latestPaymentDate = null;
+    const handleDeliverySelection = (weekDetail) => {
 
-                // Loop through each order detail to find the one with the latest payment date and payment id
-                orderDetails.order_details.forEach(order => {
-                    if (order.payment_id && order.payment_date) {
-                        const paymentDate = new Date(order.payment_date);
+    }
 
-                        // Check if this order has a later payment date than the current active week
-                        if (!latestPaymentDate || paymentDate > latestPaymentDate) {
-                            latestPaymentDate = paymentDate;
-                            activeWeekOrderDetails = order;
-                        }
-                    }
-                });
-                console.log('activeWeekOrderDetails::', activeWeekOrderDetails)
-                const { order_details, ...cleanedOrderDetails } = orderDetails;
-                cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
-                // If an active week order details is found, set it in the state
-                if (activeWeekOrderDetails) {
-                    console.log('again setting active week', cleanedOrderDetails)
-                    setActiveWeekOrder(cleanedOrderDetails);
-                    getUserOrderRecipesDetail(cleanedOrderDetails.activeWeekOrderDetails.week);
-                }
-            }
-        };
-
-        findActiveWeekOrder(); // Call the function to find the active week order details
-    }, [orderDetails, getUserOrderRecipesDetail]);
     return (
         <div className="bg-doodle py-md-5 py-3">
 
@@ -393,7 +139,7 @@ export default function MyMenu() {
                                 </button>
                                 <div className="upcoming-date-wrapper mx-2">
                                     {/* Map through each order detail */}
-                                    {orderDetails?.order_details.map((weekDetail, index) => {
+                                    {orderDetails?.order_details?.map((weekDetail, index) => {
                                         // Parse delivery date string into a Date object
                                         const deliveryDate = new Date(weekDetail.delivery_date);
 
@@ -437,7 +183,7 @@ export default function MyMenu() {
 
                                 <p className="fw-medium mt-2">
                                     We picked <span
-                                    className="text-primary">{orderDetails?.order_details?.length} meals</span> we
+                                    className="text-primary">{activeWeekOrder?.activeWeekOrderDetails?.items?.length} meals</span> we
                                     thought you would like.
                                 </p>
                             </div>

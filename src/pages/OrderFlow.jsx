@@ -6,12 +6,13 @@ import {
     getPeoplePerWeek,
     getPrices,
     getRecipePerWeek,
+    placeOrder,
     signup,
     updateCustomerDetails
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
-import {loadStripe} from "@stripe/stripe-js";
 import {useNavigate} from "react-router-dom";
+import {loadStripe} from "@stripe/stripe-js";
 
 export default function OrderFlow() {
     const navigate = useNavigate();
@@ -161,11 +162,28 @@ export default function OrderFlow() {
     };
 
     const makePayment = async () => {
+        const payload = {};
+        payload['amount_paid'] = orderFlow.totalPrice
+        payload['customer_id'] = user.customer_id
+        payload['active_week'] = 1
+        payload['order_type'] = 'S'
+        payload['meals_per_week'] = orderFlow.selectedRecipePerWeek
+        payload['number_of_people'] = orderFlow.selectedPeople
+        console.log('Payload: ', payload)
+        const order_resp = await placeOrder(payload)
+        if (order_resp) {
+            console.log('placeOrder: ', order_resp.order_id)
+            localStorage.setItem('order_id', order_resp.order_id)
+            proccedToStripe(order_resp.order_id)
+
+        }
+    };
+    const proccedToStripe = async (order_id) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
         savingData();
 
         const {priceId, productId} = await generate_stripe_subscription({
-            productName: 'edenmade_' + user.customer_id,
+            productName: 'edenmade_' + order_id,
             price: orderFlow.totalPrice.toFixed(2)
         })
         const {error} = await stripe.redirectToCheckout({

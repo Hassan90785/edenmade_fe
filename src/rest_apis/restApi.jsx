@@ -17,19 +17,18 @@ export const getCategories = async () => {
     }
 };
 
-export const getRecipes = async () => {
+export const getOrderInfo = async (req) => {
     try {
         // Make HTTP POST request to your backend for login
-        const response = await axios.get(`${config.BaseUrl}/recipes`);
+        const response = await axios.post(`${config.BaseUrl}/orders/fetch-order`,req);
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('getRecipes:', data)
         return data;
     } catch (error) {
-        toast.error("Getting Categories Failed!")
+        toast.error("Getting OrderInfo Failed!")
         // Handle login error, such as displaying error message
-        console.error("Categories failed:", error);
+        console.error("OrderInfo failed:", error);
     }
 };
 
@@ -62,6 +61,21 @@ export const signup = async (req) => {
         // Handle signup error, such as displaying error message
         toast.error("Signup  Failed!")
         console.error("signup failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const placeOrder = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/orders/place-order`, req);
+        // Assuming the response contains user data upon successful signup
+        const { data } = response.data;
+        console.log('placeOrder:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Placing Order  Failed!")
+        console.error("placeOrder failed:", error);
         throw error; // Rethrow the error for the caller to handle
     }
 };

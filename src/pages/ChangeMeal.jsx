@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import RecipeCard from "../components/RecipeCard";
 import {getCategoriesWithRecipes} from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
+import RecipeCardChangeMeal from "../components/RecipeCardChangeMeal.jsx";
 
 export default function ChangeMeal() {
     const [categories, setCategories] = useState([]);
@@ -136,7 +136,7 @@ export default function ChangeMeal() {
                             {itemSource.map(category => (
                                 <>
                                     {category.recipes.map(recipe => (
-                                        <RecipeCard categoryName={recipe.category_name} recipeName={recipe.title}
+                                        <RecipeCardChangeMeal categoryName={recipe.category_name} recipeName={recipe.title}
                                                     addRemoveRecipes={addRemoveRecipes}
                                                     recipe_id={recipe.recipe_id}
                                                     active_order={orderDetials.activeWeekOrderDetails}/>
