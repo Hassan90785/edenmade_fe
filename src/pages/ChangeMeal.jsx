@@ -1,7 +1,8 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getCategoriesWithRecipes} from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import RecipeCardChangeMeal from "../components/RecipeCardChangeMeal.jsx";
+import {useLocation} from "react-router-dom";
 
 export default function ChangeMeal() {
     const [categories, setCategories] = useState([]);
@@ -9,10 +10,12 @@ export default function ChangeMeal() {
     const [itemSource, setItemSource] = useState([]);
     const [recipes, setRecipes] = useState([]);
     const [orderDetials, setOrderDetails] = useState({});
+    const location = useLocation();
+    const params = location.state;
+
     useEffect(() => {
-        const activeWeek = localStorage.getItem('activeWeekOrderDetails');
-        const activeWeekDetails = JSON.parse(activeWeek);
-        setOrderDetails(activeWeekDetails)
+        console.log('orderDetials: ',params)
+        setOrderDetails(params)
     }, []);
     useEffect(() => {
         const fetchData = async () => {
@@ -71,7 +74,7 @@ export default function ChangeMeal() {
         console.log('length:', orderDetials.activeWeekOrderDetails.items.length)
         console.log('meals_per_week:', orderDetials.activeWeekOrderDetails.meals_per_week)
         if (orderDetials.active_week === 1 && orderDetials.activeWeekOrderDetails.meals_per_week !== orderDetials.activeWeekOrderDetails.items.length) {
-            toast.error('Can not modify the size of meal.')
+            toast.error('Can not modify the size of meal during first week.')
         }
     }
 
@@ -83,7 +86,22 @@ export default function ChangeMeal() {
                         <p className="text-white body-text-extra-small mb-0">
                             Your Order Detail for
                         </p>
-                        <h1 className="text-white my-2 fs-2">Mon, Dec 04</h1>
+                        <h1 className="text-white my-2 fs-2">
+                            {orderDetials && (
+                                <>
+                        <span className={'mr-3'}>
+                            {new Date(orderDetials?.activeWeekOrderDetails?.delivery_date).
+                            toLocaleString('default', {weekday: 'short'})},
+                        </span>
+                                    <span className={'mr-3'}>
+                            {new Date(orderDetials.activeWeekOrderDetails?.delivery_date).
+                            toLocaleString('default', {month: 'short'})}
+                        </span>
+                                    {new Date(orderDetials.activeWeekOrderDetails?.delivery_date).
+                                    toLocaleString('default', {day: 'numeric'})}
+                                </>
+                            )}
+                        </h1>
                         <p className="text-white body-text-extra-small mb-0 d-flex align-items-center">
                             {orderDetials.activeWeekOrderDetails?.meals_per_week} meals
                             for {orderDetials.activeWeekOrderDetails?.number_of_people} People
@@ -102,8 +120,7 @@ export default function ChangeMeal() {
                                     <div className="d-inline-block">
                                         <h1>Add a {orderDetials.activeWeekOrderDetails?.meals_per_week + 1}th Meal</h1>
                                         <p className="fw-medium my-0">
-                                            this week for just
-                                            <span className="text-primary fw-bold">£3.99</span> per
+                                            this week for just <span className="text-primary fw-bold">£3.99</span> per
                                             person
                                         </p>
                                     </div>
@@ -132,6 +149,7 @@ export default function ChangeMeal() {
                                 </ul>
                             </div>
                         </div>
+
                         <div className="row">
                             {itemSource.map(category => (
                                 <>

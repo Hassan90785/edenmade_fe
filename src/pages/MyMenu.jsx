@@ -14,7 +14,7 @@ export default function MyMenu() {
     } = useAuth();
     const handleButtonClickMyMenu = () => {
         // Navigate to the "/orderFlow" route
-        navigate("/change-meal");
+        navigate("/change-meal", { state: activeWeekOrder });
     };
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -28,8 +28,6 @@ export default function MyMenu() {
         navigate("/selected-meals-cart");
     };
 
-    const [ws, setWs] = useState(null);
-    const [selectedDelivery, setSelectedDelivery] = useState(null); // State for holding selected delivery
     const [activeWeekOrder, setActiveWeekOrder] = useState(null); // State for holding order details of active week
     const [orderDetails, setOrderDetails] = useState({});
     const [showPopup, setShowPopup] = useState(false);
@@ -58,19 +56,12 @@ export default function MyMenu() {
         setActiveWeek();
     }, [orderDetails]);
     const setActiveWeek = () => {
-        console.log('Setting up Active Week')
-        console.log('orderDetails', orderDetails)
-        console.log('active_week', orderDetails?.active_week)
         if (orderDetails && orderDetails.active_week) {
             // Retrieve the order details for the active week
             const activeWeek = orderDetails.active_week;
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
-            console.log('activeWeek: ', activeWeek)
-            console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
             const {order_details, ...cleanedOrderDetails} = orderDetails;
-            console.log('cleanedOrderDetails: ', cleanedOrderDetails)
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
-            // Set the order details of active week in the state
             setActiveWeekOrder(cleanedOrderDetails);
 
         }
