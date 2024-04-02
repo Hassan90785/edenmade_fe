@@ -12,7 +12,7 @@ export default function MyMenu() {
     const {user} = useAuth();
     const handleButtonClickMyMenu = () => {
         // Navigate to the "/orderFlow" route
-        navigate("/change-meal", { state: activeWeekOrder });
+        navigate("/change-meal", {state: activeWeekOrder});
     };
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -29,6 +29,8 @@ export default function MyMenu() {
     const [activeWeekOrder, setActiveWeekOrder] = useState(null); // State for holding order details of active week
     const [orderDetails, setOrderDetails] = useState({});
     const [showPopup, setShowPopup] = useState(false);
+    const [selectedWeek, setSelectedWeek] = useState(1);
+    const [upcoming, setUpcoming] = useState(null);
 
 
     useEffect(() => {
@@ -41,6 +43,8 @@ export default function MyMenu() {
                 }
                 const orderInfo = await getOrderInfo({orderId: orderId})
                 console.log('orderInfo: ', orderInfo)
+                const deliveryDate = getDeliveryDateWithNullPayment(orderInfo);
+                setUpcoming(deliveryDate);
                 setOrderDetails(orderInfo);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -61,11 +65,14 @@ export default function MyMenu() {
             const {order_details, ...cleanedOrderDetails} = orderDetails;
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
             localStorage.setItem('activeWeekOrder', JSON.stringify(activeWeekOrder))
+            console.log('activeWeekOrder: ', activeWeekOrder)
+            console.log('order_details: ', order_details)
             setActiveWeekOrder(cleanedOrderDetails);
 
         }
     }
     const addSuffix = (day) => {
+        if (!day || isNaN(day)) return ""; // Handle invalid day
         if (day >= 11 && day <= 13) {
             return `${day}th`;
         } else if (day % 10 === 1) {
@@ -79,9 +86,48 @@ export default function MyMenu() {
         }
     };
 
-    const handleDeliverySelection = (weekDetail) => {
+    const renderFormattedDate = (dateString) => {
+        function formatDate(dateString) {
+            if (!dateString) return null; // Handle null or undefined cases
 
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return null; // Handle invalid date string
+
+            const options = {weekday: 'short', month: 'short', day: 'numeric'};
+            const formattedDate = date.toLocaleString('default', options);
+            const parts = formattedDate.split(' '); // Split the date into parts
+            const day = parseInt(parts[2]); // Extract the day part and parse it
+            const suffixDay = addSuffix(day); // Add suffix to the day part
+            parts[2] = suffixDay; // Replace the original day part with the suffixed one
+            return parts.join(' '); // Join the parts back into a formatted date
+        }
+
+        const formattedDate = formatDate(dateString);
+        if (!formattedDate) return null; // Handle null or invalid date string
+
+        return (
+            <>
+                <span className={'mr-3'}>{formattedDate}</span>
+            </>
+        );
+    };
+
+    const handleDeliverySelection = (weekDetail) => {
+        console.log('orderDetails: ', orderDetails)
+        console.log('weekDetail: ', weekDetail)
+        console.log('selectedWeek: ', selectedWeek);
+        setSelectedWeek(weekDetail.week)
     }
+    const getDeliveryDateWithNullPayment = (orders) => {
+        console.log('getDeliveryDateWithNullPayment', orders);
+        if (orders && orders.order_details.length > 0) {
+            const orderWithNullPayment = orders.order_details.find(order => order.payment_id === null);
+            console.log('getDeliveryDateWithNullPayment', orderWithNullPayment.delivery_date)
+            return orderWithNullPayment ? orderWithNullPayment.delivery_date : null;
+        } else {
+            return null;
+        }
+    };
 
     return (
         <div className="bg-doodle py-md-5 py-3">
@@ -100,18 +146,8 @@ export default function MyMenu() {
                                 <p className="text-white body-text-extra-small mb-0">
                                     Upcomming
                                 </p>
-                                <h1 className="text-white my-2 fs-2">
-                                    {activeWeekOrder && (
-                                        <>
-                        <span className={'mr-3'}>
-                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {weekday: 'short'})},
-                        </span>
-                                            <span className={'mr-3'}>
-                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {month: 'short'})}
-                        </span>
-                                            {new Date(activeWeekOrder.activeWeekOrderDetails.delivery_date).toLocaleString('default', {day: 'numeric'})}
-                                        </>
-                                    )}
+                                <h1 className="text-white fs-1 mt-3">
+                                    {renderFormattedDate(upcoming)}
                                 </h1>
                                 {/* <>{JSON.stringify(orderDetail)}</> */}
                                 <p
@@ -144,7 +180,7 @@ export default function MyMenu() {
                                             <div
                                                 key={index}
                                                 className={`upcoming-date text-center mx-2 
-                ${activeWeekOrder && activeWeekOrder.activeWeekOrderDetails.week === weekDetail.week ? 'active' : 'opacity-5'}`}
+                ${selectedWeek === weekDetail.week ? 'active' : ''}`}
                                                 onClick={() => handleDeliverySelection(weekDetail)}
                                             >
                 <span className="date">
