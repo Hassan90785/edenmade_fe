@@ -3,6 +3,7 @@
 import  {createContext, useContext, useState} from "react";
 import axios from "axios";
 import config from "./config.js";
+import {toast} from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -18,12 +19,14 @@ export const AuthProvider = ({children}) => {
             const { data } = response.data;
             // Set the user in the authentication context
             setUser(data);
-
             console.log('data:',data)
             console.log('user:',user)
+            toast.success("Login Successful")
+            return data;
         } catch (error) {
-            // Handle login error, such as displaying error message
             console.error("Login failed:", error);
+            toast.error(error.response.data.message)
+            // Handle login error, such as displaying error message
         }
     };
 

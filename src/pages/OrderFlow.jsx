@@ -193,8 +193,8 @@ export default function OrderFlow() {
                 quantity: 1,
             }],
             customerEmail: user.email,
-            successUrl: `${window.location.origin}/my-menu?success`,
-            cancelUrl: `${window.location.origin}/order-flow?error`,
+            successUrl: `${window.location.origin}/edenmade/my-menu?success`,
+            cancelUrl: `${window.location.origin}/edenmade/order-flow?error`,
 
 
         });
@@ -399,7 +399,7 @@ export default function OrderFlow() {
                                         is {orderFlow.selectedRecipePerWeek * orderFlow.selectedPeople} total servings
                                     </h2>
                                     <div className="text-end d-none d-md-block">
-                                        <img src="/meals-image.png"/>
+                                        <img src="edenmade/meals-image.png"/>
                                     </div>
                                 </div>
                                 {" "}

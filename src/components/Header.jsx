@@ -1,139 +1,132 @@
-import { useAuth } from "../auth_v2/authContext";
+import React from "react";
+import {Link} from "react-router-dom";
+import {useAuth} from "../auth_v2/authContext";
 
 export default function Header() {
-  // const { authUser, userSignOut, userSignInWithGoogle } = useAuth();
-  const { login, user, logout } = useAuth(); // Access login function from auth context
+    const { user, logout} = useAuth(); // Access login function from auth context
 
-  const handleLogin = () => {
-    // Call the login function when the login button is clicked
-    login({ email: 'hassan90785@gmail.com', password: 'hassan' });
-  };
-  const handleLogout = () => {
-    // Call the login function when the login button is clicked
-    logout();
-  };
-  return (
-    <div className="aj-drop-shadow background-white">
-      <div className="container">
-        <nav className="navbar navbar-expand-lg bg-body-tertiary background-white">
-          <div className="container-fluid px-0">
-            <a className="navbar-brand aj-site-logo" href="/">
-              EDENMADE.IO
-            </a>
-            <button
-              className="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div
-              className="collapse navbar-collapse"
-              id="navbarSupportedContent"
-            >
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    About Us
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    How it Works
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Our Recipes
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">
-                    Contact Us
-                  </a>
-                </li>
-              </ul>
-              <div className="d-flex">
-                {/* For Unregistered User */}
-                {/* <button className="btn btn-primary">Login</button> */}
-
-                {/* For Registered User */}
-                <a href="http://localhost:5173/my-menu">
-                  <button className="btn btn-primary mx-3">My Menu</button>
-                </a>
-
-                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li className="nav-item dropdown text-primary d-flex align-items-center">
-                    <i className="fi fi-sr-user"></i>
-                    <a
-                      className="nav-link dropdown-toggle text-primary"
-                      href="#"
-                      role="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      Account
-                    </a>
-
-                    <ul className="dropdown-menu aj-drop-shadow">
-                      <li>
-                        <a
-                          className="dropdown-item"
-                          href="#"
-                          data-bs-toggle="modal"
-                          data-bs-target="#planSettingPopup"
+    const handleLogout = () => {
+        // Call the login function when the login button is clicked
+        logout();
+    };
+    return (
+        <div className="aj-drop-shadow background-white">
+            <div className="container">
+                <nav className="navbar navbar-expand-lg bg-body-tertiary background-white">
+                    <div className="container-fluid px-0">
+                        <Link to="" className="navbar-brand aj-site-logo">
+                            EDENMADE.IO
+                        </Link>
+                        <button
+                            className="navbar-toggler"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation"
                         >
-                          Plan Settings
-                        </a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Account Info
-                        </a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="/selected-meals-cart">
-                          My Cart
-                        </a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      <li>
-                        <a className="dropdown-item" href="#">
-                          Payment Methods
-                        </a>
-                      </li>
-                      <li>
-                        <hr className="dropdown-divider" />
-                      </li>
-                      {user ? (
-                        <li onClick={handleLogout}>
-                          <a className="dropdown-item">Logout</a>{" "}
-                        </li>
-                      ) : (
-                        <li onClick={handleLogin}>
-                          <a className="dropdown-item">Login</a>
-                        </li>
-                      )}
-                    </ul>
-                  </li>
-                </ul>
-              </div>
+                            <span className="navbar-toggler-icon"></span>
+                        </button>
+                        <div
+                            className="collapse navbar-collapse"
+                            id="navbarSupportedContent"
+                        >
+                            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li className="nav-item">
+                                    <Link to="/about-us" className="nav-link">
+                                        About Us
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/how-it-works" className="nav-link">
+                                        How it Works
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/our-recipes" className="nav-link">
+                                        Our Recipes
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/contact-us" className="nav-link">
+                                        Contact Us
+                                    </Link>
+                                </li>
+                            </ul>
+                            <div className="d-flex">
+                                {/* For Registered User */}
+                                <Link to="/my-menu">
+                                    <button className="btn btn-primary mx-3">My Menu</button>
+                                </Link>
+
+                                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                                    <li className="nav-item dropdown text-primary d-flex align-items-center">
+                                        <i className="fi fi-sr-user"></i>
+                                        <Link
+                                            to="#"
+                                            className="nav-link dropdown-toggle text-primary"
+                                            role="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            Account
+                                        </Link>
+
+                                        <ul className="dropdown-menu aj-drop-shadow">
+                                            <li>
+                                                <Link
+                                                    to="#"
+                                                    className="dropdown-item"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#planSettingPopup"
+                                                >
+                                                    Plan Settings
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider"/>
+                                            </li>
+                                            <li>
+                                                <Link to="/account-info" className="dropdown-item">
+                                                    Account Info
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider"/>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    to="/selected-meals-cart"
+                                                    className="dropdown-item"
+                                                >
+                                                    My Cart
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider"/>
+                                            </li>
+                                            {user ? (
+                                                <li onClick={handleLogout}>
+                                                    <Link to="#" className="dropdown-item">
+                                                        Logout
+                                                    </Link>{" "}
+                                                </li>
+                                            ) : (
+                                                <li>
+                                                    <Link to="/login" className="dropdown-item">
+                                                        Login
+                                                    </Link>
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </div>
-          </div>
-        </nav>
-      </div>
-    </div>
-  );
+        </div>
+    );
 }

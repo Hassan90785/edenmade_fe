@@ -9,9 +9,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <AuthProvider>
             {" "}
-            <Header/>
             <App/>
-            <Footer/>
         </AuthProvider>
     </React.StrictMode>
 );

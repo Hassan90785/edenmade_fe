@@ -12,7 +12,7 @@ export default function RecipeCardChangeMeal({recipeName, categoryName, recipe_i
                 <div className="position-relative">
                     <img
                         className="card-img-top rounded-0"
-                        src="/meal.png"
+                        src="/edenmade/meal.png"
                         alt="meal image"
                     />
                     {!isOrdered ? (

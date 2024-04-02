@@ -9,9 +9,7 @@ import {getOrderInfo} from "../rest_apis/restApi.jsx";
 
 export default function MyMenu() {
     const navigate = useNavigate();
-    const {
-        authUser,
-    } = useAuth();
+    const {user} = useAuth();
     const handleButtonClickMyMenu = () => {
         // Navigate to the "/orderFlow" route
         navigate("/change-meal", { state: activeWeekOrder });

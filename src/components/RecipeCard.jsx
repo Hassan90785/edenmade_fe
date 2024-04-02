@@ -4,7 +4,7 @@ export default function RecipeCard({recipeName,categoryName}) {
             <div className="card border-0 rounded-0 aj-drop-shadow">
                 <img
                     className="card-img-top rounded-0"
-                    src="/meal.png"
+                    src="/edenmade/meal.png"
                     alt="meal image"
                 />
                 <div className="card-body">
