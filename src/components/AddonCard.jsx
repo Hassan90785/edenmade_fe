@@ -9,7 +9,7 @@ export default function AddonCard() {
         </div>
         <img
           className="card-img-top rounded-0"
-          src="/addon.png"
+          src="/edenmade/addon.png"
           alt="meal image"
         />
         <div className="card-body">

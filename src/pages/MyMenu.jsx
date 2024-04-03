@@ -1,18 +1,19 @@
 import AddonCard from "../components/AddonCard";
-import RecipeCard from "../components/RecipeCard";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
 import {useAuth} from "../auth/authContext";
 import ChangeBoxSizePopup from "../components/popups/ChangeBoxSizePopup";
 import {getOrderInfo} from "../rest_apis/restApi.jsx";
+import OrderDetails from "../components/OrderDetails.jsx";
 
 
 export default function MyMenu() {
     const navigate = useNavigate();
     const {user} = useAuth();
     const handleButtonClickMyMenu = () => {
+
         // Navigate to the "/orderFlow" route
-        navigate("/change-meal", {state: activeWeekOrder});
+        navigate("/change-meal", {state: orderDetails, selectedWeek});
     };
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -113,9 +114,7 @@ export default function MyMenu() {
     };
 
     const handleDeliverySelection = (weekDetail) => {
-        console.log('orderDetails: ', orderDetails)
-        console.log('weekDetail: ', weekDetail)
-        console.log('selectedWeek: ', selectedWeek);
+        console.log('weekDetail: ', weekDetail);
         setSelectedWeek(weekDetail.week)
     }
     const getDeliveryDateWithNullPayment = (orders) => {
@@ -229,11 +228,7 @@ export default function MyMenu() {
                             </div>
                         </div>
                         <div className="row mb-5">
-                            {activeWeekOrder && activeWeekOrder.activeWeekOrderDetails.items.map((item, index) => (
-                                <React.Fragment key={index}>
-                                    <RecipeCard categoryName={item.spice_level_name} recipeName={item.recipe_name}/>
-                                </React.Fragment>
-                            ))}
+                            <OrderDetails orderDetails={orderDetails?.order_details} selectedWeek={selectedWeek}/>
                         </div>
                     </div>
                 </div>
