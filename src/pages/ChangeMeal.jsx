@@ -1,26 +1,39 @@
 import React, {useEffect, useState} from "react";
-import {getCategoriesWithRecipes} from "../rest_apis/restApi.jsx";
+import {getCategoriesWithRecipes, getSpiceLevels} from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import RecipeCardChangeMeal from "../components/RecipeCardChangeMeal.jsx";
 import {useLocation} from "react-router-dom";
+import {renderFormattedDate} from "../components/RenderFormattedDate.jsx";
 
 export default function ChangeMeal() {
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [itemSource, setItemSource] = useState([]);
     const [recipes, setRecipes] = useState([]);
-    const [orderDetials, setOrderDetails] = useState({});
+    const [orderDetails, setOrderDetails] = useState({});
+    const [selectedWeek, setSelectedWeek] = useState({});
+    const [selectedOrder, setSelectedOrder] = useState({});
+    const [spiceLevels, setSpiceLevels] = useState({});
     const location = useLocation();
     const params = location.state;
 
     useEffect(() => {
-        console.log('orderDetials: ',params)
-        setOrderDetails(params)
+        const completeOrder = params.orderDetails;
+        const week = params.selectedWeek;
+        console.log('completeOrder', completeOrder)
+        console.log('week', week)
+        const filteredOrder = completeOrder?.order_details?.find(order => order.week === week);
+        console.log('filteredOrder', filteredOrder)
+        setOrderDetails(completeOrder)
+        setSelectedWeek(week)
+        setSelectedOrder(filteredOrder)
     }, []);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const categoriesData = await getCategoriesWithRecipes();
+                const spices = await getSpiceLevels();
+                setSpiceLevels(spices)
                 // Append an additional category "All" containing all recipes
                 const allRecipes = categoriesData.reduce((acc, category) => {
                     return acc.concat(category.recipes);
@@ -51,30 +64,43 @@ export default function ChangeMeal() {
         const items = categories.filter(value => value.category_id === category_id);
         setItemSource(items);
     }
-    const addRemoveRecipes = (id) => {
-        const newItemObj = recipes.find(value => value.recipe_id === id);
-        const existingOrder = { ...orderDetials }; // Make a copy of orderDetails
-        const alreadyExistIndex = existingOrder.activeWeekOrderDetails.items.findIndex(value => value.recipe_id === id);
+    const addRemoveRecipes = (updatedRecipe) => {
+        console.log('updatedRecipe: ', updatedRecipe)
+        const updatedItems = selectedOrder.items.slice(); // Make a shallow copy of items array
+        const index = updatedItems.findIndex(item => item.recipe_id === updatedRecipe.recipe_id);
 
-        if (alreadyExistIndex !== -1) {
-            // If the item already exists, remove it from the items array
-            existingOrder.activeWeekOrderDetails.items.splice(alreadyExistIndex, 1);
+        if (index !== -1) {
+            updatedItems.splice(index, 1); // Remove the recipe if it exists
         } else {
-            // If the item doesn't exist, add it to the items array
-            existingOrder.activeWeekOrderDetails.items.push(newItemObj);
+            updatedItems.push(updatedRecipe); // Add the recipe otherwise
         }
 
-        // Update the orderDetails state with the modified existingOrder
-        setOrderDetails(existingOrder);
-    }
-
+        // Update the selectedOrder with the modified items
+        const updatedOrder = { ...selectedOrder, items: updatedItems };
+        console.log('selectedOrder: ', selectedOrder)
+        console.log('updatedOrder: ', updatedOrder)
+        setSelectedOrder(updatedOrder);
+    };
+    const updateSpiceLevels = (updatedOrder) => {
+        setSelectedOrder(updatedOrder);
+    };
     const updateOrder = () => {
-        console.log('orderDetials:', orderDetials)
-        console.log('week:', orderDetials.active_week)
-        console.log('length:', orderDetials.activeWeekOrderDetails.items.length)
-        console.log('meals_per_week:', orderDetials.activeWeekOrderDetails.meals_per_week)
-        if (orderDetials.active_week === 1 && orderDetials.activeWeekOrderDetails.meals_per_week !== orderDetials.activeWeekOrderDetails.items.length) {
+        if (selectedWeek === 1 &&
+            selectedOrder.meals_per_week !== selectedOrder.items.length) {
             toast.error('Can not modify the size of meal during first week.')
+        } else {
+            const updated = {...orderDetails};
+            const index = orderDetails.order_details.findIndex(order => order.week === selectedWeek);
+            if (index !== -1) {
+                updated.order_details[index] = selectedOrder;
+                setOrderDetails(updated)
+            } else {
+                toast.error(`Order not found for selectedWeek: ${selectedWeek}`);
+            }
+            console.log('orderDetails:', orderDetails)
+            console.log('selectedOrder: ', selectedOrder)
+            console.log('selectedWeek: ', selectedWeek)
+            toast.success('Order is ready to update')
         }
     }
 
@@ -87,25 +113,12 @@ export default function ChangeMeal() {
                             Your Order Detail for
                         </p>
                         <h1 className="text-white my-2 fs-2">
-                            {orderDetials && (
-                                <>
-                        <span className={'mr-3'}>
-                            {new Date(orderDetials?.activeWeekOrderDetails?.delivery_date).
-                            toLocaleString('default', {weekday: 'short'})},
-                        </span>
-                                    <span className={'mr-3'}>
-                            {new Date(orderDetials.activeWeekOrderDetails?.delivery_date).
-                            toLocaleString('default', {month: 'short'})}
-                        </span>
-                                    {new Date(orderDetials.activeWeekOrderDetails?.delivery_date).
-                                    toLocaleString('default', {day: 'numeric'})}
-                                </>
-                            )}
+                            {renderFormattedDate(selectedOrder?.delivery_date)}
                         </h1>
                         <p className="text-white body-text-extra-small mb-0 d-flex align-items-center">
-                            {orderDetials.activeWeekOrderDetails?.meals_per_week} meals
-                            for {orderDetials.activeWeekOrderDetails?.number_of_people} People
-                            ({orderDetials.activeWeekOrderDetails?.meals_per_week * orderDetials.activeWeekOrderDetails?.number_of_people} Servings)
+                            {selectedOrder?.meals_per_week} meals
+                            for {selectedOrder?.number_of_people} People
+                            ({selectedOrder?.meals_per_week * selectedOrder?.number_of_people} Servings)
                         </p>
                     </div>
                 </div>
@@ -118,7 +131,7 @@ export default function ChangeMeal() {
                                         <i className="fi fi-rr-box-open-full fs-5 lh-1 align-middle"></i>
                                     </button>
                                     <div className="d-inline-block">
-                                        <h1>Add a {orderDetials.activeWeekOrderDetails?.meals_per_week + 1}th Meal</h1>
+                                        <h1>Add a {selectedOrder?.meals_per_week + 1}th Meal</h1>
                                         <p className="fw-medium my-0">
                                             this week for just <span className="text-primary fw-bold">£3.99</span> per
                                             person
@@ -152,14 +165,18 @@ export default function ChangeMeal() {
 
                         <div className="row">
                             {itemSource.map(category => (
-                                <>
+                                <React.Fragment key={category.category_id}>
                                     {category.recipes.map(recipe => (
-                                        <RecipeCardChangeMeal categoryName={recipe.category_name} recipeName={recipe.title}
-                                                    addRemoveRecipes={addRemoveRecipes}
-                                                    recipe_id={recipe.recipe_id}
-                                                    active_order={orderDetials.activeWeekOrderDetails}/>
+                                        <RecipeCardChangeMeal
+                                            key={recipe.recipe_id}
+                                            recipe={recipe}
+                                            selectedOrder={selectedOrder}
+                                            spiceLevels={spiceLevels}
+                                            onUpdateOrder={updateSpiceLevels}
+                                            onAddRemoveRecipe={addRemoveRecipes}
+                                        />
                                     ))}
-                                </>
+                                </React.Fragment>
                             ))}
                         </div>
                     </div>
