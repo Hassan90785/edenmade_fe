@@ -13,6 +13,7 @@ import {
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import {loadStripe} from "@stripe/stripe-js";
+import {ValidatedInput} from "../components/ValidateInput.jsx";
 
 export default function OrderFlow() {
     const navigate = useNavigate();
@@ -62,6 +63,8 @@ export default function OrderFlow() {
         }));
     };
     const updateUserDetails = (prop, value) => {
+        console.log('Props:', prop)
+        console.log('value:', value)
         setUser(prevState => ({
             ...prevState,
             [prop]: value
@@ -518,77 +521,73 @@ export default function OrderFlow() {
                                 <div className="col-12 px-md-5 px-3 my-5">
                                     <div className="row">
                                         <div className="col-md-6 col-12">
-                                            <input
+                                            <ValidatedInput
                                                 type="text"
                                                 id="deatilFirstName"
                                                 name="first_name"
                                                 placeholder="First Name*"
-                                                className="form-control mb-3"
-                                                required
-                                                onChange={(e) =>
-                                                    updateUserDetails("first_name", e.target.value)
-                                                }
+                                                value={user?.first_name}
+                                                inputType={'s'}
+                                                onChange={(value) => updateUserDetails("first_name", value)}
                                             />
+
                                         </div>
                                         <div className="col-md-6 col-12">
-                                            <input
+                                            <ValidatedInput
                                                 type="text"
                                                 id="deatilLastName"
                                                 name="last_name"
                                                 placeholder="Last Name*"
-                                                className="form-control mb-3"
-                                                required
-                                                onChange={(e) =>
-                                                    updateUserDetails("last_name", e.target.value)
-                                                }
+                                                value={user?.last_name}
+                                                inputType={'s'}
+                                                onChange={(value) => updateUserDetails("last_name", value)}
                                             />
+
                                         </div>
                                         <div className="col-md-6 col-12">
-                                            <input
-                                                type="tel"
-                                                id="deatilPhone"
-                                                name="phone_number"
-                                                placeholder="Phone Number"
-                                                className="form-control mb-3"
-                                                onChange={(e) =>
-                                                    updateUserDetails("phone_number", e.target.value)
-                                                }
-                                            />
+                                            <ValidatedInput
+                                            type="text"
+                                            id="deatilPhone"
+                                            name="phone_number"
+                                            placeholder="Phone Number"
+                                            value={user?.phone_number}
+                                            inputType={'n'}
+                                            onChange={(value) => updateUserDetails("phone_number", value)}
+                                        />
+
                                         </div>
                                         <div className="col-md-6 col-12">
-                                            <input
+
+                                            <ValidatedInput
                                                 type="text"
                                                 id="deatilAddress"
                                                 name="address"
                                                 placeholder="Address"
-                                                className="form-control mb-3"
-                                                onChange={(e) =>
-                                                    updateUserDetails("address", e.target.value)
-                                                }
+                                                value={user?.address}
+                                                inputType={'e'}
+                                                onChange={(value) => updateUserDetails("address", value)}
                                             />
                                         </div>
                                         <div className="col-md-6 col-12">
-                                            <input
+                                            <ValidatedInput
                                                 type="text"
                                                 id="deatilCity"
                                                 name="city"
                                                 placeholder="City"
-                                                className="form-control mb-3"
-                                                onChange={(e) =>
-                                                    updateUserDetails("city", e.target.value)
-                                                }
+                                                value={user?.city}
+                                                inputType={'s'}
+                                                onChange={(value) => updateUserDetails("city", value)}
                                             />
                                         </div>
                                         <div className="col-md-6 col-12">
-                                            <input
+                                            <ValidatedInput
                                                 type="text"
                                                 id="deatilZip"
                                                 name="postal_code"
                                                 placeholder="Postal Code"
-                                                className="form-control mb-3"
-                                                onChange={(e) =>
-                                                    updateUserDetails("postal_code", e.target.value)
-                                                }
+                                                value={user?.postal_code}
+                                                inputType={'n'}
+                                                onChange={(value) => updateUserDetails("postal_code", value)}
                                             />
                                         </div>
                                         <div className="col-md-6 col-12 mx-auto mt-3">
