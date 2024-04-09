@@ -1,10 +1,20 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../auth_v2/authContext";
 
 export default function Header() {
-    const { user, logout} = useAuth(); // Access login function from auth context
+    const {user, logout} = useAuth(); // Access login function from auth context
+    const location = useLocation();
+    const navigate = useNavigate();
+    // Check if the URL contains the query parameter 'success'
 
+    const isSuccess = location.search.includes('success');
+
+    if (isSuccess) {
+        console.log('Going to route to my menu');
+        navigate('/my-menu')
+        console.log('Navigated');
+    }
     const handleLogout = () => {
         // Call the login function when the login button is clicked
         logout();
@@ -15,7 +25,7 @@ export default function Header() {
                 <nav className="navbar navbar-expand-lg bg-body-tertiary background-white">
                     <div className="container-fluid px-0">
                         <Link to="" className="navbar-brand aj-site-logo">
-                            EDENMADE.IO
+                            <img src="/edenmade/logo.png" className="card-img-top rounded-0 logo" alt="logo"/>
                         </Link>
                         <button
                             className="navbar-toggler"

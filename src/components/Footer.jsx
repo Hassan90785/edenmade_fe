@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function Footer() {
   return (
     <>
@@ -6,7 +8,7 @@ export default function Footer() {
           <div className="row">
             <div className="col-lg-4 col-12 text-center text-lg-start">
               <a className="aj-site-logo" href="/">
-                EDENMADE.IO
+                <img src="/edenmade/logo.png" className="card-img-top rounded-0 logo" alt="logo"/>
               </a>
               <p className="body-text-small">
                 Eat healthy, save time, and hone your skills in the kitchen. Now

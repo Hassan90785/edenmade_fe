@@ -67,6 +67,10 @@ body {
     background-color: #ffffff !important;
 }
 
+.logo {
+    width: 150px !important;
+}
+
 h1 {
     font-weight: 900;
     font-size: 24px;
@@ -524,7 +528,8 @@ a {
         }
     }
 }
-.opacity-5{
+
+.opacity-5 {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -598,12 +603,14 @@ a {
 .mr-3 {
     margin-right: 3px;
 }
-.ordered_recipe{
+
+.ordered_recipe {
     border: #ff6900 2px solid !important;
 }
-.add-button{
+
+.add-button {
     bottom: 5px;
-    right:10px;
+    right: 10px;
     background: white;
     color: #ff6900;
     border: #ff6900;

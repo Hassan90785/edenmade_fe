@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {getCategoriesWithRecipes, getSpiceLevels} from "../rest_apis/restApi.jsx";
+import {getCategoriesWithRecipes, getSpiceLevels, updateOrderAPI} from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import RecipeCardChangeMeal from "../components/RecipeCardChangeMeal.jsx";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {renderFormattedDate} from "../components/RenderFormattedDate.jsx";
 
 export default function ChangeMeal() {
@@ -16,7 +16,7 @@ export default function ChangeMeal() {
     const [spiceLevels, setSpiceLevels] = useState({});
     const location = useLocation();
     const params = location.state;
-
+    const navigate = useNavigate();
     useEffect(() => {
         const completeOrder = params.orderDetails;
         const week = params.selectedWeek;
@@ -72,19 +72,28 @@ export default function ChangeMeal() {
         if (index !== -1) {
             updatedItems.splice(index, 1); // Remove the recipe if it exists
         } else {
+            updatedRecipe.mapping_id = null;
             updatedItems.push(updatedRecipe); // Add the recipe otherwise
         }
-
+        let meal_size = selectedOrder.meals_per_week;
+        if (selectedOrder.week !== 1) {
+            meal_size = updatedItems.length;
+        }
         // Update the selectedOrder with the modified items
-        const updatedOrder = { ...selectedOrder, items: updatedItems };
-        console.log('selectedOrder: ', selectedOrder)
-        console.log('updatedOrder: ', updatedOrder)
+        const updatedOrder = {...selectedOrder, items: updatedItems, meals_per_week: meal_size};
+
+        console.log('selectedOrder.meals_per_week: ', selectedOrder.meals_per_week)
+        console.log('updatedOrder: ', updatedItems.length)
+
         setSelectedOrder(updatedOrder);
     };
     const updateSpiceLevels = (updatedOrder) => {
         setSelectedOrder(updatedOrder);
     };
-    const updateOrder = () => {
+    const updateOrder = async () => {
+        console.log('selectedWeek: ', selectedWeek)
+        console.log('selectedOrder: ', selectedOrder.items.length)
+        console.log('selectedOrder.meals_per_week: ', selectedOrder.meals_per_week)
         if (selectedWeek === 1 &&
             selectedOrder.meals_per_week !== selectedOrder.items.length) {
             toast.error('Can not modify the size of meal during first week.')
@@ -93,6 +102,14 @@ export default function ChangeMeal() {
             const index = orderDetails.order_details.findIndex(order => order.week === selectedWeek);
             if (index !== -1) {
                 updated.order_details[index] = selectedOrder;
+                const updateOrderResult = await updateOrderAPI(updated);
+                console.log('updateOrderResult', updateOrderResult)
+                if (updateOrderResult && updateOrderResult.status === 1) {
+                    toast.success(`Your order has been updated successfully!:`);
+                    setTimeout(() => {
+                        navigate('/my-menu');
+                    }, 3000)
+                }
                 setOrderDetails(updated)
             } else {
                 toast.error(`Order not found for selectedWeek: ${selectedWeek}`);
@@ -100,7 +117,6 @@ export default function ChangeMeal() {
             console.log('orderDetails:', orderDetails)
             console.log('selectedOrder: ', selectedOrder)
             console.log('selectedWeek: ', selectedWeek)
-            toast.success('Order is ready to update')
         }
     }
 

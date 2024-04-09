@@ -193,7 +193,7 @@ export default function OrderFlow() {
                 quantity: 1,
             }],
             customerEmail: user.email,
-            successUrl: `${window.location.origin}/edenmade/my-menu?success`,
+            successUrl: `${window.location.origin}/edenmade?success`,
             cancelUrl: `${window.location.origin}/edenmade/order-flow?error`,
 
 
