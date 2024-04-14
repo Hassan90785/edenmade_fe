@@ -79,6 +79,21 @@ export const getSpiceLevels = async () => {
         console.error("Spices failed:", error);
     }
 };
+export const getSnacks = async () => {
+    try {
+        // Make HTTP POST request to your backend for login
+        const response = await axios.get(`${config.BaseUrl}/snacks/`);
+
+        // Assuming the response contains user data upon successful login
+        const {data} = response.data;
+        console.log('getSnacks:', data)
+        return data;
+    } catch (error) {
+        toast.error("Getting Snacks Failed!")
+        // Handle login error, such as displaying error message
+        console.error("Snacks failed:", error);
+    }
+};
 
 
 export const signup = async (req) => {
@@ -152,6 +167,20 @@ export const generate_stripe_subscription = async (req) => {
     } catch (error) {
         // Handle signup error, such as displaying error message
         toast.error("Stripe subscription generation Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const trigger_manual_payment = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/trigger_manual_payment`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('trigger_manual_payment:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Stripe trigger_manual_payment generation Failed!")
         throw error; // Rethrow the error for the caller to handle
     }
 };

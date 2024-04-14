@@ -182,7 +182,7 @@ export default function MyMenu() {
                                     <i className="fi fi-sr-restaurant me-2 fs-5 lh-1 align-middle"></i>
                                     Change Meals
                                 </button>
-                                <button onClick={handleOpen}
+                                <button onClick={handleButtonClickMyMenu}
                                         className="btn btn-primary aj-button body-text-small fw-700 px-3">
                                     <i className="fi fi-rr-box-open-full fs-5 lh-1 align-middle"></i>
                                 </button>
@@ -215,11 +215,7 @@ export default function MyMenu() {
                             </div>
                         </div>
                         <div className="row">
-                            <AddonCard/>
-                            <AddonCard/>
-                            <AddonCard/>
-                            <AddonCard/>
-                            <AddonCard/>
+                            <AddonCard orderDetails={activeWeekOrder}/>
                         </div>
                     </div>
                 </div>
