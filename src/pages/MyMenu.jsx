@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from 'react';
 import {useAuth} from "../auth/authContext";
 import ChangeBoxSizePopup from "../components/popups/ChangeBoxSizePopup";
-import {getOrderInfo} from "../rest_apis/restApi.jsx";
+import {getOrderInfo, getSnackOrder, getSnacks} from "../rest_apis/restApi.jsx";
 import OrderDetails from "../components/OrderDetails.jsx";
 import {addSuffix, renderFormattedDate} from "../components/RenderFormattedDate.jsx";
 
@@ -30,9 +30,11 @@ export default function MyMenu() {
 
     const [activeWeekOrder, setActiveWeekOrder] = useState(null); // State for holding order details of active week
     const [orderDetails, setOrderDetails] = useState({});
+    const [snackOrderDetails, setSnackOrderDetails] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedWeek, setSelectedWeek] = useState(1);
     const [upcoming, setUpcoming] = useState(null);
+    const [snacks, setSnacks] = useState([]);
 
 
     useEffect(() => {
@@ -57,12 +59,16 @@ export default function MyMenu() {
     }, []);
 
     useEffect(() => {
+        console.log('Setting Active Week')
         setActiveWeek();
     }, [orderDetails]);
     const setActiveWeek = () => {
         if (orderDetails && orderDetails.active_week) {
+            console.log('Setting Active Week')
             // Retrieve the order details for the active week
+            console.log('orderDetails: ',orderDetails)
             const activeWeek = orderDetails.active_week;
+            console.log('activeWeek: ', activeWeek)
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
             const {order_details, ...cleanedOrderDetails} = orderDetails;
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
@@ -74,8 +80,43 @@ export default function MyMenu() {
         }
     }
 
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const allSnacks = await getSnacks();
+                setSnacks(allSnacks);
+            } catch (error) {
+                console.error("Error fetching getAllSnacks:", error);
+            }
+        }
+
+        fetchData();
+    }, []);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                console.log('-----------getSnackOrderDetails----------: ')
+                console.log('activeWeekOrder: ', activeWeekOrder)
+                console.log('orderDetails: ', orderDetails)
+                const getSnackOrderDetails = await getSnackOrder({
+                    active_week: activeWeekOrder.active_week,
+                    order_id: activeWeekOrder.order_id
+                });
+                setSnackOrderDetails(getSnackOrderDetails);
+                console.log('getSnackOrder: ', getSnackOrderDetails)
+            } catch (error) {
+                console.error("Error fetching getSnackOrder:", error);
+            }
+        }
+
+        fetchData();
+    }, []);
 
     const handleDeliverySelection = (weekDetail) => {
+        console.log('weekDetail: ', weekDetail);
+        setSelectedWeek(weekDetail.week)
+    }
+    const addNewAddOns = (weekDetail) => {
         console.log('weekDetail: ', weekDetail);
         setSelectedWeek(weekDetail.week)
     }
@@ -194,6 +235,22 @@ export default function MyMenu() {
                         </div>
                     </div>
                 </div>
+                {snackOrderDetails && snackOrderDetails.length > 0 &&
+                    <div className="row my-5">
+                    <div className="col">
+                        <h1>Your Snacks</h1>
+
+                        <p className="fw-medium mt-2">
+                            Total Snacks:  <span
+                            className="text-primary">{snackOrderDetails.length} </span>
+                        </p>
+                    </div>
+                    <div className="col">
+                            <AddonCard orderInfo={null} itemSource={snackOrderDetails}
+                                       canSelected={false}   snackOrder={true}/>
+                    </div>
+                </div>
+                }
                 <div className="row mt-5">
                     <div className="col-12">
                         <div className="row">
@@ -215,7 +272,8 @@ export default function MyMenu() {
                             </div>
                         </div>
                         <div className="row">
-                            <AddonCard orderDetails={activeWeekOrder}/>
+                            <AddonCard orderInfo={activeWeekOrder} itemSource={snacks} addRemoveAddOns={addNewAddOns}
+                                       canSelected={false}   snackOrder={false}/>
                         </div>
                     </div>
                 </div>

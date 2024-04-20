@@ -95,6 +95,22 @@ export const getSnacks = async () => {
     }
 };
 
+export const addNewSnacksMapping = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for login
+        const response = await axios.post(`${config.BaseUrl}/snacks/addSnacksMapping`, req);
+
+        // Assuming the response contains user data upon successful login
+        const {data} = response.data;
+        console.log('addNewSnacksMapping:', data)
+        return data;
+    } catch (error) {
+        toast.error("Getting addNewSnacksMapping Failed!")
+        // Handle login error, such as displaying error message
+        console.error("Snacks failed:", error);
+    }
+};
+
 
 export const signup = async (req) => {
     try {
@@ -142,6 +158,22 @@ export const getOrderDetailsByCustomer = async (req) => {
         throw error; // Rethrow the error for the caller to handle
     }
 };
+export const getSnackOrder = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        console.log('getSnackOrder: ', req)
+        const response = await axios.get(`${config.BaseUrl}/snacks/getSnackOrder`,{ params: req });
+        // Assuming the response contains user data upon successful signup
+        const {data} = response.data;
+        console.log('getSnackOrder: ', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("GetSnackOrder  Failed!")
+        console.error("getSnackOrder failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
 export const updateCustomerDetails = async (req) => {
     try {
         // Make HTTP POST request to your backend for signup
@@ -167,6 +199,34 @@ export const generate_stripe_subscription = async (req) => {
     } catch (error) {
         // Handle signup error, such as displaying error message
         toast.error("Stripe subscription generation Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const create_checkout_session = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/create_checkout_session`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('create_checkout_session:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Stripe checkout generation Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const create_checkout_session_v2 = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/create_checkout_session_v2`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('create_checkout_session:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Stripe checkout generation Failed!")
         throw error; // Rethrow the error for the caller to handle
     }
 };
