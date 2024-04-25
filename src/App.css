@@ -43,6 +43,12 @@ body {
     color: var(--theme-primary) !important;
 }
 
+.border-select {
+    border: 2px solid #FFB100 !important;
+    border-radius: unset !important;
+    box-shadow: none !important;
+}
+
 .text-secondary {
     color: var(--theme-secondary) !important;
 }

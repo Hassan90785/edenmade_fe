@@ -50,16 +50,18 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
                         {title}
                     </h5>
                     <div className="row">
-                        <div className="col-7">
+                        <div className="col">
                             <p className="card-text body-text-extra-small mb-2">with Sauce</p>
                             <p className="card-text body-text-extra-small">
                                 <span className="fw-bold">10 min</span> | {category_name}
                             </p>
                         </div>
+                    </div>
                         {spiceLevels && (
-                            <div className="col-5">
+                            <div className="row">
+                            <div className="col">
                                 <select
-                                    className="form-select"
+                                    className="form-select border-select"
                                     aria-label="Spice Level Select"
                                     onChange={handleSpiceLevelChange}
                                     onClick={handleSelectClick} // Prevents click event from bubbling up
@@ -73,8 +75,8 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
                                     ))}
                                 </select>
                             </div>
+                            </div>
                         )}
-                    </div>
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@ import {useNavigate} from "react-router-dom";
 import {loadStripe} from "@stripe/stripe-js";
 import {ValidatedInput} from "../components/ValidateInput.jsx";
 import {useGoogleLogin} from "@react-oauth/google";
-
+import FacebookLogin from 'react-facebook-login';
 export default function OrderFlow() {
     const navigate = useNavigate();
     const [currentState, setCurrentState] = useState(1);
@@ -182,7 +182,17 @@ export default function OrderFlow() {
         setCurrentState(3)
         console.log('Resp: ', resp)
     }
+    const FacebookSignIn = () => {
+        const responseFacebook = (response) => {
+            console.log(response);
+            // Handle the successful authentication response
+        };
 
+        const onFailure = (error) => {
+            console.error(error);
+            // Handle failure
+        };
+    }
     const goToStep3 = async () => {
         // Validate that all required fields are filled
         if (!userLogin.email || !userLogin.password) {
@@ -498,13 +508,18 @@ export default function OrderFlow() {
                                             </button>
                                         </div>
                                         <div className="col-12 col-md-4 mb-2">
-                                            <button
-                                                className="w-100 btn btn-primary aj-button facebook-button fw-700 px-2 lh-1"
-                                                // onClick={userSignInWithFacebook}
-                                            >
-                                                <i className="fi fi-brands-facebook fs-6 me-2 align-middle lh-1"></i>
-                                                Continue with Facebook
-                                            </button>
+                                            <FacebookLogin
+                                                appId="981357549998663"
+                                                autoLoad={false}
+                                                fields="name,email,picture"
+                                                callback={FacebookSignIn}
+                                                cssClass="w-100 btn btn-primary aj-button facebook-button py-2 fw-700 px-2 lh-1"
+                                                icon="fi fi-brands-facebook px-2"
+                                                render={renderProps => (
+                                                    <button onClick={renderProps.onClick}>
+                                                    Continue with Facebook
+                                                    </button> )}
+                                            />
                                         </div>
                                     </div>
                                 </div>
