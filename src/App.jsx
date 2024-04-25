@@ -16,10 +16,12 @@ import 'react-toastify/dist/ReactToastify.css';
 import Login from "./pages/Login.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
+import {GoogleOAuthProvider} from "@react-oauth/google";
 
 function App({routes}) {
     return (
         <AuthProvider config={config}>
+            <GoogleOAuthProvider clientId="27154291381-5rsnbrk8g5q2hjq0ivhk6bg67dcbq2ro.apps.googleusercontent.com">
             <BrowserRouter basename="/edenmade">
                 <Header/>
                 <div className="content">
@@ -35,7 +37,7 @@ function App({routes}) {
                 <Footer/>
                 <ToastContainer/>
             </BrowserRouter>
-
+            </GoogleOAuthProvider>
         </AuthProvider>
 
     );

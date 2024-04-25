@@ -236,7 +236,7 @@ export default function MyMenu() {
                     </div>
                 </div>
                 {snackOrderDetails && snackOrderDetails.length > 0 &&
-                    <div className="row my-5">
+                    <div className="row mb-5">
                     <div className="col">
                         <h1>Your Snacks</h1>
 

@@ -8,12 +8,14 @@ import {
     getRecipePerWeek,
     placeOrder,
     signup,
+    socialLogin,
     updateCustomerDetails
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import {loadStripe} from "@stripe/stripe-js";
 import {ValidatedInput} from "../components/ValidateInput.jsx";
+import {useGoogleLogin} from "@react-oauth/google";
 
 export default function OrderFlow() {
     const navigate = useNavigate();
@@ -145,6 +147,42 @@ export default function OrderFlow() {
         }
 
     };
+    const login = useGoogleLogin({
+        onSuccess: async tokenResponse => {
+            try {
+                const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v1/userinfo?alt=json', {
+                    headers: {
+                        Authorization: `Bearer ${tokenResponse.access_token}`
+                    }
+                });
+
+                if (!userInfoResponse.ok) {
+                    throw new Error('Failed to fetch user info from Google.');
+                }
+
+                const userInfo = await userInfoResponse.json();
+                const email = userInfo.email;
+                // const indicator = getIndicator(); // Replace this with your logic to get the indicator
+
+                console.log('Email:', email);
+                // console.log('Indicator:', indicator);
+                if(email){
+                    await makeSocialLoginCall(email, 'G')
+                }
+                console.log('Token Response:', tokenResponse);
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+    });
+    const makeSocialLoginCall = async (email, indicator) => {
+        const resp = await socialLogin({email, indicator});
+        toast.success("Google SignIn Successfully");
+        setUser(resp);
+        setCurrentState(3)
+        console.log('Resp: ', resp)
+    }
+
     const goToStep3 = async () => {
         // Validate that all required fields are filled
         if (!userLogin.email || !userLogin.password) {
@@ -446,7 +484,7 @@ export default function OrderFlow() {
                                         <div className="col-12 col-md-4 mb-2">
                                             <button
                                                 className="w-100 btn btn-primary aj-button google-button fw-700 px-2 lh-1"
-                                                // onClick={userSignInWithGoogle}
+                                                onClick={login}
                                             >
                                                 <i className="fi fi-brands-google fs-6 me-2 align-middle lh-1"></i>
                                                 Continue with Google
@@ -546,14 +584,14 @@ export default function OrderFlow() {
                                         </div>
                                         <div className="col-md-6 col-12">
                                             <ValidatedInput
-                                            type="text"
-                                            id="deatilPhone"
-                                            name="phone_number"
-                                            placeholder="Phone Number"
-                                            value={user?.phone_number}
-                                            inputType={'n'}
-                                            onChange={(value) => updateUserDetails("phone_number", value)}
-                                        />
+                                                type="text"
+                                                id="deatilPhone"
+                                                name="phone_number"
+                                                placeholder="Phone Number"
+                                                value={user?.phone_number}
+                                                inputType={'n'}
+                                                onChange={(value) => updateUserDetails("phone_number", value)}
+                                            />
 
                                         </div>
                                         <div className="col-md-6 col-12">

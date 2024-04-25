@@ -127,6 +127,21 @@ export const signup = async (req) => {
         throw error; // Rethrow the error for the caller to handle
     }
 };
+export const socialLogin = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/auth/social_login`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response.data;
+        console.log('social_login:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Sign in Failed!")
+        console.error("sign in failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
 export const placeOrder = async (req) => {
     try {
         // Make HTTP POST request to your backend for signup
