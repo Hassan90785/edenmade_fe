@@ -48,8 +48,6 @@ export default function OrderFlow() {
         }));
     };
     const updateUserDetails = (prop, value) => {
-        console.log('Props:', prop)
-        console.log('value:', value)
         const updatedUser = { ...user, [prop]: value };
         // Update user details using setUserDetails function
         setUserDetails(updatedUser);
@@ -95,6 +93,7 @@ export default function OrderFlow() {
                 } else {
                     updateOrderFlow('selectedRecipes', [...orderFlow.selectedRecipes, value]);
                 }
+                console.log('orderFlow: ',orderFlow )
                 break;
         }
     };
@@ -203,6 +202,7 @@ export default function OrderFlow() {
         payload['active_week'] = 1
         payload['order_type'] = 'S'
         payload['meals_per_week'] = orderFlow.selectedRecipePerWeek
+        payload['selected_recipes'] = orderFlow.selectedRecipes.join(',')
         payload['number_of_people'] = orderFlow.selectedPeople
         console.log('Payload: ', payload)
         const order_resp = await placeOrder(payload)

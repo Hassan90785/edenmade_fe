@@ -116,7 +116,9 @@ a {
     font-weight: 900;
     text-decoration: none;
 }
-
+.header-title{
+    text-align: center;
+}
 .border-right-divider {
     border-right: 2px dashed var(--theme-body);
 }

@@ -1,7 +1,8 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../auth_v2/authContext";
 import {toast} from "react-toastify";
+import AccountInfo from "./AccountInfo.jsx";
 
 export default function Header() {
     const {user, logout, setUserDetails} = useAuth(); // Access login function from auth context
@@ -11,7 +12,15 @@ export default function Header() {
     // Check if the URL contains the query parameter 'success'
 
     const isSuccess = location.search.includes('success');
+    const [showRegisterDialog, setShowRegisterDialog] = useState(false);
 
+    const openRegisterDialog = () => {
+        setShowRegisterDialog(true);
+    };
+
+    const closeRegisterDialog = () => {
+        setShowRegisterDialog(false);
+    };
     if (isSuccess) {
         console.log('Going to route to my menu');
         navigate('/my-menu')
@@ -116,9 +125,9 @@ export default function Header() {
                                                         <hr className="dropdown-divider"/>
                                                     </li>
                                                     <li>
-                                                        <Link to="/account-info" className="dropdown-item">
+                                                        <div data-bs-toggle="modal" data-bs-target="#exampleModal" className="dropdown-item">
                                                             Account Info
-                                                        </Link>
+                                                        </div>
                                                     </li>
                                                     <li>
                                                         <hr className="dropdown-divider"/>
@@ -155,6 +164,10 @@ export default function Header() {
                             </div>
                         </div>
                     </div>
+                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <AccountInfo/>
+                        </div>
                 </nav>
             </div>
         </div>
