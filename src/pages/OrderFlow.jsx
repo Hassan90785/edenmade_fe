@@ -17,6 +17,8 @@ import {loadStripe} from "@stripe/stripe-js";
 import {ValidatedInput} from "../components/ValidateInput.jsx";
 import {useGoogleLogin} from "@react-oauth/google";
 import FacebookLogin from 'react-facebook-login';
+import {useAuth} from "../auth_v2/authContext.jsx";
+
 export default function OrderFlow() {
     const navigate = useNavigate();
     const [currentState, setCurrentState] = useState(1);
@@ -24,27 +26,8 @@ export default function OrderFlow() {
     const [categories, setCategories] = useState([]);
     const peopleOptions = getPeoplePerWeek();
     const prices = getPrices();
-    const [user, setUser] = useState({
-        customer_id: null,
-        username: null,
-        email: "",
-        password: "",
-        is_google: 0,
-        is_apple: 0,
-        is_facebook: 0,
-        otp: null,
-        first_name: null,
-        last_name: null,
-        date_of_birth: null,
-        gender: null,
-        address: null,
-        city: null,
-        phone_number: null,
-        state: null,
-        country: null,
-        postal_code: null
-    });
     const [message, setMessage] = useState('');
+    const {user, setUserDetails} = useAuth();
     const [orderDetails, setOrderDetails] = useState(null);
     const [orderFlow, setOrderFlow] = useState({
         selectedPeople: "",
@@ -67,10 +50,9 @@ export default function OrderFlow() {
     const updateUserDetails = (prop, value) => {
         console.log('Props:', prop)
         console.log('value:', value)
-        setUser(prevState => ({
-            ...prevState,
-            [prop]: value
-        }));
+        const updatedUser = { ...user, [prop]: value };
+        // Update user details using setUserDetails function
+        setUserDetails(updatedUser);
     };
 // Function to update order flow properties
     const updateUserLogin = (prop, value) => {
@@ -166,7 +148,7 @@ export default function OrderFlow() {
 
                 console.log('Email:', email);
                 // console.log('Indicator:', indicator);
-                if(email){
+                if (email) {
                     await makeSocialLoginCall(email, 'G')
                 }
                 console.log('Token Response:', tokenResponse);
@@ -178,7 +160,8 @@ export default function OrderFlow() {
     const makeSocialLoginCall = async (email, indicator) => {
         const resp = await socialLogin({email, indicator});
         toast.success("Google SignIn Successfully");
-        setUser(resp);
+        setUserDetails(resp);
+
         setCurrentState(3)
         console.log('Resp: ', resp)
     }
@@ -203,7 +186,8 @@ export default function OrderFlow() {
             try {
                 const data = await signup(userLogin);
                 toast.success("SignUp User Successfully");
-                setUser(data);
+                setUserDetails(data);
+
                 setCurrentState(3)
 
             } catch (error) {
@@ -232,7 +216,7 @@ export default function OrderFlow() {
     const proccedToStripe = async (order_id) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
         savingData();
-
+        console.log('user: ', user)
         const {priceId, productId} = await generate_stripe_subscription({
             productName: 'edenmade_' + order_id,
             price: orderFlow.totalPrice.toFixed(2)
@@ -259,22 +243,6 @@ export default function OrderFlow() {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('orderFlow', JSON.stringify(orderFlow));
         const keys = Object.keys(localStorage);
-    }
-    const retrieveFromLocalStorage = async () => {
-        const storedCurrentState = localStorage.getItem('currentState');
-        const customer = localStorage.getItem('user');
-        const orderFlow = localStorage.getItem('orderFlow');
-        if (storedCurrentState) {
-            setCurrentState(JSON.parse(storedCurrentState));
-        }
-        if (customer) {
-            setUser(JSON.parse(customer));
-        }
-        if (orderFlow) {
-            setOrderFlow(JSON.parse(orderFlow));
-        }
-        // const getOrder = await getOrderDetailsByCustomer(user.customer_id)
-        // console.log('getOrder: ', getOrder)
     }
 
 
@@ -517,8 +485,8 @@ export default function OrderFlow() {
                                                 icon="fi fi-brands-facebook px-2"
                                                 render={renderProps => (
                                                     <button onClick={renderProps.onClick}>
-                                                    Continue with Facebook
-                                                    </button> )}
+                                                        Continue with Facebook
+                                                    </button>)}
                                             />
                                         </div>
                                     </div>

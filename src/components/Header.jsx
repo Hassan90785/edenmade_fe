@@ -1,11 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../auth_v2/authContext";
+import {toast} from "react-toastify";
 
 export default function Header() {
-    const {user, logout} = useAuth(); // Access login function from auth context
+    const {user, logout, setUserDetails} = useAuth(); // Access login function from auth context
     const location = useLocation();
     const navigate = useNavigate();
+
     // Check if the URL contains the query parameter 'success'
 
     const isSuccess = location.search.includes('success');
@@ -18,7 +20,20 @@ export default function Header() {
     const handleLogout = () => {
         // Call the login function when the login button is clicked
         logout();
+        navigate('/')
+        toast.success('Logout successfully!')
     };
+
+    useEffect(() => {
+        const userData = localStorage.getItem('user')
+        console.log('user: ', user)
+        if (userData) {
+            console.log('Setting up userData:', userData)
+            setUserDetails(JSON.parse(userData))
+        }
+    }, []);
+
+
     return (
         <div className="aj-drop-shadow background-white">
             <div className="container">
@@ -66,10 +81,11 @@ export default function Header() {
                             </ul>
                             <div className="d-flex">
                                 {/* For Registered User */}
-                                <Link to="/my-menu">
-                                    <button className="btn btn-primary mx-3">My Menu</button>
-                                </Link>
-
+                                {user && user.customer_id &&
+                                    <Link to="/my-menu">
+                                        <button className="btn btn-primary mx-3">My Menu</button>
+                                    </Link>
+                                }
                                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                     <li className="nav-item dropdown text-primary d-flex align-items-center">
                                         <i className="fi fi-sr-user"></i>
@@ -84,39 +100,43 @@ export default function Header() {
                                         </Link>
 
                                         <ul className="dropdown-menu aj-drop-shadow">
-                                            <li>
-                                                <Link
-                                                    to="#"
-                                                    className="dropdown-item"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#planSettingPopup"
-                                                >
-                                                    Plan Settings
-                                                </Link>
-                                            </li>
+                                            {user && user.customer_id &&
+                                                <>
+                                                    <li>
+                                                        <Link
+                                                            to="#"
+                                                            className="dropdown-item"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#planSettingPopup"
+                                                        >
+                                                            Plan Settings
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <hr className="dropdown-divider"/>
+                                                    </li>
+                                                    <li>
+                                                        <Link to="/account-info" className="dropdown-item">
+                                                            Account Info
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <hr className="dropdown-divider"/>
+                                                    </li>
+                                                    <li>
+                                                        <Link
+                                                            to="/selected-meals-cart"
+                                                            className="dropdown-item"
+                                                        >
+                                                            My Cart
+                                                        </Link>
+                                                    </li>
+                                                </>
+                                            }
                                             <li>
                                                 <hr className="dropdown-divider"/>
                                             </li>
-                                            <li>
-                                                <Link to="/account-info" className="dropdown-item">
-                                                    Account Info
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <hr className="dropdown-divider"/>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    to="/selected-meals-cart"
-                                                    className="dropdown-item"
-                                                >
-                                                    My Cart
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <hr className="dropdown-divider"/>
-                                            </li>
-                                            {user ? (
+                                            {user && user.customer_id ? (
                                                 <li onClick={handleLogout}>
                                                     <Link to="#" className="dropdown-item">
                                                         Logout

@@ -36,22 +36,31 @@ export default function MyMenu() {
     const [upcoming, setUpcoming] = useState(null);
     const [snacks, setSnacks] = useState([]);
 
-
     useEffect(() => {
         async function fetchData() {
             try {
-                let orderId = localStorage.getItem('order_id')
-                console.log('orderInfo: ', orderId)
-                if (orderId) {
-                    orderId = Number(orderId)
+                console.log('user:::', user)
+                let userStr = localStorage.getItem('user')
+                let userJSON = null;
+                if (userStr) {
+                   userJSON = JSON.parse(userStr)
                 }
-                const orderInfo = await getOrderInfo({orderId: orderId})
+
+                const orderInfo = await getOrderInfo({customer_id: userJSON?.customer_id})
                 console.log('orderInfo: ', orderInfo)
                 const deliveryDate = getDeliveryDateWithNullPayment(orderInfo);
-                setUpcoming(deliveryDate);
+                console.log('deliveryDate:: ', deliveryDate )
+                if(deliveryDate){
+                    const date = new Date(deliveryDate);
+                    date.setDate(date.getDate() - 2);
+
+                    const twoDaysAgo = date.toISOString();
+                    setUpcoming(twoDaysAgo);
+
+                }
                 setOrderDetails(orderInfo);
             } catch (error) {
-                console.error("Error fetching categories:", error);
+                console.error("Error fetching order:", error);
             }
         }
 
@@ -66,13 +75,14 @@ export default function MyMenu() {
         if (orderDetails && orderDetails.active_week) {
             console.log('Setting Active Week')
             // Retrieve the order details for the active week
-            console.log('orderDetails: ',orderDetails)
+            console.log('orderDetails: ', orderDetails)
             const activeWeek = orderDetails.active_week;
             console.log('activeWeek: ', activeWeek)
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
             const {order_details, ...cleanedOrderDetails} = orderDetails;
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
             localStorage.setItem('activeWeekOrder', JSON.stringify(activeWeekOrder))
+            console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
             console.log('activeWeekOrder: ', activeWeekOrder)
             console.log('order_details: ', order_details)
             setActiveWeekOrder(cleanedOrderDetails);
@@ -98,19 +108,21 @@ export default function MyMenu() {
                 console.log('-----------getSnackOrderDetails----------: ')
                 console.log('activeWeekOrder: ', activeWeekOrder)
                 console.log('orderDetails: ', orderDetails)
-                const getSnackOrderDetails = await getSnackOrder({
-                    active_week: activeWeekOrder.active_week,
-                    order_id: activeWeekOrder.order_id
-                });
-                setSnackOrderDetails(getSnackOrderDetails);
-                console.log('getSnackOrder: ', getSnackOrderDetails)
+                if (activeWeekOrder) {
+                    const getSnackOrderDetails = await getSnackOrder({
+                        active_week: activeWeekOrder.active_week,
+                        order_id: activeWeekOrder.order_id
+                    });
+                    setSnackOrderDetails(getSnackOrderDetails);
+                    console.log('getSnackOrder: ', getSnackOrderDetails)
+                }
             } catch (error) {
                 console.error("Error fetching getSnackOrder:", error);
             }
         }
 
         fetchData();
-    }, []);
+    }, [activeWeekOrder]);
 
     const handleDeliverySelection = (weekDetail) => {
         console.log('weekDetail: ', weekDetail);
@@ -136,7 +148,6 @@ export default function MyMenu() {
 
             <div>
                 {/* Your other content */}
-                <button onClick={() => setShowPopup(true)}>Open Popup</button>
 
                 {showPopup && <ChangeBoxSizePopup onClose={() => setShowPopup(false)}/>}
             </div>
@@ -237,19 +248,19 @@ export default function MyMenu() {
                 </div>
                 {snackOrderDetails && snackOrderDetails.length > 0 &&
                     <div className="row mb-5">
-                    <div className="col">
-                        <h1>Your Snacks</h1>
+                        <div className="col">
+                            <h1>Your Snacks</h1>
 
-                        <p className="fw-medium mt-2">
-                            Total Snacks:  <span
-                            className="text-primary">{snackOrderDetails.length} </span>
-                        </p>
-                    </div>
-                    <div className="col">
+                            <p className="fw-medium mt-2">
+                                Total Snacks: <span
+                                className="text-primary">{snackOrderDetails.length} </span>
+                            </p>
+                        </div>
+                        <div className="col">
                             <AddonCard orderInfo={null} itemSource={snackOrderDetails}
-                                       canSelected={false}   snackOrder={true}/>
+                                       canSelected={false} snackOrder={true}/>
+                        </div>
                     </div>
-                </div>
                 }
                 <div className="row mt-5">
                     <div className="col-12">
@@ -273,7 +284,7 @@ export default function MyMenu() {
                         </div>
                         <div className="row">
                             <AddonCard orderInfo={activeWeekOrder} itemSource={snacks} addRemoveAddOns={addNewAddOns}
-                                       canSelected={false}   snackOrder={false}/>
+                                       canSelected={false} snackOrder={false}/>
                         </div>
                     </div>
                 </div>

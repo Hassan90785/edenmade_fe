@@ -8,7 +8,27 @@ import {toast} from "react-toastify";
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
+    const empty ={
+        customer_id: null,
+        username: null,
+        email: "",
+        password: "",
+        is_google: 0,
+        is_apple: 0,
+        is_facebook: 0,
+        otp: null,
+        first_name: null,
+        last_name: null,
+        date_of_birth: null,
+        gender: null,
+        address: null,
+        city: null,
+        phone_number: null,
+        state: null,
+        country: null,
+        postal_code: null
+    };
+    const [user, setUser] = useState(empty);
 
     const login = async (userData) => {
         try {
@@ -19,8 +39,7 @@ export const AuthProvider = ({children}) => {
             const { data } = response.data;
             // Set the user in the authentication context
             setUser(data);
-            console.log('data:',data)
-            console.log('user:',user)
+            localStorage.setItem('user', JSON.stringify(data))
             toast.success("Login Successful")
             return data;
         } catch (error) {
@@ -32,11 +51,18 @@ export const AuthProvider = ({children}) => {
 
     const logout = () => {
         // Implement your logout logic here
-        setUser(null);
+        localStorage.removeItem('user')
+        setUser(empty);
+    };
+
+    const setUserDetails = (user) => {
+        // Implement your logout logic here
+        console.log('Setting Up user: ', user)
+        setUser(user);
     };
 
     return (
-        <AuthContext.Provider value={{user, login, logout}}>
+        <AuthContext.Provider value={{user, login, logout, setUserDetails}}>
             {children}
         </AuthContext.Provider>
     );

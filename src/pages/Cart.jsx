@@ -3,12 +3,19 @@ import RecipeCard from "../components/RecipeCard";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import AddonCard from "../components/AddonCard.jsx";
-import {addNewSnacksMapping, create_checkout_session_v2, getSnackOrder, getSnacks} from "../rest_apis/restApi.jsx";
+import {
+    addNewSnacksMapping,
+    create_checkout_session_v2,
+    getActiveOrderInfo,
+    getSnackOrder,
+    getSnacks
+} from "../rest_apis/restApi.jsx";
 import {loadStripe} from "@stripe/stripe-js";
 import {useAuth} from "../auth_v2/authContext.jsx";
 
 export default function Cart() {
     const navigate = useNavigate();
+    const {user} = useAuth(); // Access login function from auth context
     const [orderDetails, setOrderDetails] = useState({});
     const [snacks, setSnacks] = useState([]);
     const [snacksOrder, setSnacksOrder] = useState({
@@ -16,7 +23,6 @@ export default function Cart() {
         week: null,
         snacks: []
     });
-    const {user} = useAuth(); // Access login function from auth context
     const [showAddon, setShowAddon] = useState(false);
     const handleButtonClickMyMenu = () => {
         navigate("/change-meal");
@@ -26,12 +32,26 @@ export default function Cart() {
         updateSnacksOrderDetails('week', orderDetails.active_week)
     }, [orderDetails]);
     useEffect(() => {
-        console.log('----------orderDetails--------', orderDetails)
-        const activeOrder = localStorage.getItem('activeWeekOrder')
-        console.log('activeOrder', JSON.parse(activeOrder))
-        if (JSON.parse(activeOrder)) {
-            setOrderDetails(JSON.parse(activeOrder))
+        async function fetchActiveOrder() {
+            try {
+                console.log('----------activeOrder--------')
+                console.log('user:::', user)
+                let userStr = localStorage.getItem('user')
+                let userJSON = null;
+                if (userStr) {
+                    userJSON = JSON.parse(userStr)
+                }
+                if (userJSON && userJSON.customer_id) {
+                    const activeOrder = await getActiveOrderInfo({customer_id: userJSON.customer_id})
+                    console.log('activeOrder', activeOrder)
+                    setOrderDetails(activeOrder)
+                }
+            } catch (error) {
+                console.error("Error fetching getAllSnacks:", error);
+            }
         }
+
+        fetchActiveOrder();
     }, []);
     useEffect(() => {
         async function fetchData() {
@@ -186,7 +206,7 @@ export default function Cart() {
                 {showAddon &&
                     <div className="row mb-3">
                         <AddonCard orderInfo={orderDetails} itemSource={snacks} addRemoveAddOns={addNewAddOns}
-                                   canSelected={true}  snackOrder={false}/>
+                                   canSelected={true} snackOrder={false}/>
                     </div>
                 }
                 <div className="row my-5">
