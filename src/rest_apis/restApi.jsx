@@ -203,6 +203,21 @@ export const updateCustomerDetails = async (req) => {
         throw error; // Rethrow the error for the caller to handle
     }
 };
+export const getPlanSettings = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/orders/getPlanSetting`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response.data;
+        console.log('resp', data)
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Getting Plan Settings  Failed!")
+        console.error("Getting Plan Settings :", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
 export const generate_stripe_subscription = async (req) => {
     try {
         // Make HTTP POST request to your backend for signup
@@ -214,6 +229,48 @@ export const generate_stripe_subscription = async (req) => {
     } catch (error) {
         // Handle signup error, such as displaying error message
         toast.error("Stripe subscription generation Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const pause_subscription = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/pauseSubscription`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('pauseSubscription:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Pausing subscription Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const resume_subscription = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/resumeSubscription`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('resumeSubscription:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Resuming subscription Failed!")
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const cancel_subscription = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/stripe/cancelSubscription`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response;
+        console.log('cancelSubscription:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Cancelling subscription Failed!")
         throw error; // Rethrow the error for the caller to handle
     }
 };

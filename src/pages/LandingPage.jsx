@@ -25,7 +25,7 @@ export default function LandingPage() {
                 onClick={handleButtonClick}
               >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxe
+                View our Box
               </button>:null}
               
             </div>
@@ -87,7 +87,7 @@ export default function LandingPage() {
                 onClick={handleButtonClick}
               >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxe
+                View our Box
               </button>:null}
             </div>
           </div>
@@ -116,7 +116,7 @@ export default function LandingPage() {
                 onClick={handleButtonClick}
               >
                 <i className="fi fi-rr-box-open-full me-2 fs-5 lh-1 align-middle"></i>
-                View our Boxe
+                View our Box
               </button>:null}
             </div>
           </div>

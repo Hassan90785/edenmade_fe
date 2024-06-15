@@ -3,11 +3,26 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../auth_v2/authContext";
 import {toast} from "react-toastify";
 import AccountInfo from "./AccountInfo.jsx";
+import GetPlanSetting from "./GetPlanSetting.jsx";
+import {getPlanSettings} from "../rest_apis/restApi.jsx";
 
 export default function Header() {
     const {user, logout, setUserDetails} = useAuth(); // Access login function from auth context
     const location = useLocation();
     const navigate = useNavigate();
+    const [plan, setPlan] = useState({});
+        async function fetchData(userData) {
+            try {
+                console.log('user', userData)
+                if (userData && userData.customer_id) {
+                    const orderInfo = await getPlanSettings({customer_id: userData.customer_id})
+                    setPlan(orderInfo)
+                    console.log('GetPlanSetting', orderInfo)
+                }
+            } catch (error) {
+                console.error("Error fetching order:", error);
+            }
+        }
 
     // Check if the URL contains the query parameter 'success'
 
@@ -38,7 +53,10 @@ export default function Header() {
         console.log('user: ', user)
         if (userData) {
             console.log('Setting up userData:', userData)
-            setUserDetails(JSON.parse(userData))
+            const jsonUser = JSON.parse(userData)
+            setUserDetails(jsonUser)
+            fetchData(jsonUser);
+
         }
     }, []);
 
@@ -111,22 +129,21 @@ export default function Header() {
                                         <ul className="dropdown-menu aj-drop-shadow">
                                             {user && user.customer_id &&
                                                 <>
+
+
                                                     <li>
-                                                        <Link
-                                                            to="#"
-                                                            className="dropdown-item"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#planSettingPopup"
-                                                        >
-                                                            Plan Settings
-                                                        </Link>
+                                                        <div data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                             className="dropdown-item cursor-pointer">
+                                                            Account Info
+                                                        </div>
                                                     </li>
                                                     <li>
                                                         <hr className="dropdown-divider"/>
                                                     </li>
                                                     <li>
-                                                        <div data-bs-toggle="modal" data-bs-target="#exampleModal" className="dropdown-item">
-                                                            Account Info
+                                                        <div data-bs-toggle="modal" data-bs-target="#GetPlanSetting"
+                                                             className="dropdown-item  cursor-pointer">
+                                                            Plan Settings
                                                         </div>
                                                     </li>
                                                     <li>
@@ -164,10 +181,14 @@ export default function Header() {
                             </div>
                         </div>
                     </div>
-                        <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <AccountInfo/>
-                        </div>
+                    <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                        <AccountInfo/>
+                    </div>
+                    <div className="modal fade" id="GetPlanSetting" tabindex="-1" aria-labelledby="GetPlanSetting"
+                         aria-hidden="true">
+                        <GetPlanSetting data={plan}/>
+                    </div>
                 </nav>
             </div>
         </div>

@@ -32,6 +32,13 @@ const AccountInfo = () => {
                         <h1 className=" aj-site-logo w-100  text-center ">
                             Account Info
                         </h1>
+                        <button
+                            type="button"
+                            className="btn btn-close"
+                            data-bs-dismiss="modal"
+                        >
+                            <i className="fi fi-rr-rectangle-xmark"></i>
+                        </button>
                     </div>
                     <div className="modal-body">
                         <div className="row ">
@@ -113,10 +120,8 @@ const AccountInfo = () => {
 
                         </div>
                     </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-transparent aj-button body-text-small fw-700 px-5 me-3"
-                                data-bs-dismiss="modal">Close
-                        </button>
+                    <div className="modal-footer d-flex justify-content-center">
+
                         <button type="button" className="btn btn-primary aj-button body-text-small fw-700 px-5"
                                 onClick={saveChanges}>Save changes
                         </button>

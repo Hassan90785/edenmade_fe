@@ -418,7 +418,7 @@ export default function OrderFlow() {
                                         is {orderFlow.selectedRecipePerWeek * orderFlow.selectedPeople} total servings
                                     </h2>
                                     <div className="text-end d-none d-md-block">
-                                        <img src="edenmade/meals-image.png"/>
+                                        <img src="meals-image.png"/>
                                     </div>
                                 </div>
                                 {" "}
@@ -640,15 +640,14 @@ export default function OrderFlow() {
                         >
                             <h1 className="text-center">Payment Details</h1>
                             <div className="row mt-5">
-                                <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
-
+                                <div className="col-md-6 col-12 d-flex justify-content-center align-items-center px-md-5 px-3 pt-3 pb-0">
                                     <button
                                         onClick={makePayment}
-                                        className="w-100 btn btn-primary aj-button body-text-small fw-700 background-secondary border-0">
-                                        <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i>{" "}
-                                        Continue with Stripe
+                                        className="btn btn-primary aj-button body-text-small fw-700 background-secondary border-0">
+                                        <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i> Continue with Stripe
                                     </button>
                                 </div>
+
                                 <div className="col-md-6 col-12 px-md-5 px-3 pt-3 pb-0">
                                     <ProductSummary selectedPeople={orderFlow.selectedPeople}
                                                     selectedRecipePerWeek={orderFlow.selectedRecipePerWeek}
