@@ -84,12 +84,12 @@ export default function Header() {
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/our-recipes" className="nav-link" activeClassName="active">
+                                <NavLink to="/recipes" className="nav-link" activeClassName="active">
                                     Our recipe
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/contact-us" className="nav-link" activeClassName="active">
+                                <NavLink to="/contact" className="nav-link" activeClassName="active">
                                     Contact us
                                 </NavLink>
                             </li>

@@ -22,6 +22,7 @@ import Howitworks from "./pages/howitworks.jsx";
 import Recipes from "./pages/recipes.jsx";
 import Privacy from "./pages/privacy.jsx";
 import Terms from "./pages/Terms.jsx";
+import Contactus from "./pages/Contactus.jsx";
 
 function App({routes}) {
     return (
@@ -33,6 +34,7 @@ function App({routes}) {
                     <Routes>
                         <Route path="/" element={<LandingPage/>}/>
                         <Route path="about" element={<Aboutus/>}/>
+                        <Route path="contact" element={<Contactus/>}/>
                         <Route path="how-it-works" element={<Howitworks/>}/>
                         <Route path="recipes" element={<Recipes/>}/>
                         <Route path="privacy" element={<Privacy/>}/>

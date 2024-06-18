@@ -1,23 +1,92 @@
+import React, { useState, useEffect } from "react";
+import { getAllRecipes } from "../rest_apis/restApi.jsx";
+
 export default function Recipes() {
+    const [recipes, setRecipes] = useState([]);
+    const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+    useEffect(() => {
+        async function fetchAllRecipes() {
+            try {
+                const resp = await getAllRecipes();
+                if (resp && resp.status === 1) {
+                    console.log('resp', resp.data)
+                    setRecipes(resp.data);
+                }
+            } catch (error) {
+                console.error("Error fetching all recipes:", error);
+            }
+        }
+
+        fetchAllRecipes();
+    }, []);
+
+    const openRecipeModal = (recipe) => {
+        setSelectedRecipe(recipe);
+        // Example: Trigger modal display code here
+        // You can use Bootstrap modal or any other modal library/modal component
+        console.log("Selected Recipe:", recipe);
+    };
+
+    const closeRecipeModal = () => {
+        setSelectedRecipe(null);
+        // Example: Close modal code here
+    };
+
     return (
         <div className="container my-5 aj-drop-shadow background-white">
             <div className="row py-3">
                 <div className="col">
-                    <h1 className={'text-center my-3 aj-site-logo'}>Recipes</h1>
-                    <p>At Edenmade, we strive to make home-cooked meals and snacks not only convenient but also a delightful experience. Here’s how we ensure that every step of your Edenmade journey is seamless:</p>
-                    <ol>
-                        <li>Explore our diverse menu featuring seasonal dishes, snacks, and sides. Choose your favorites based on your tastes and dietary preferences.</li>
-                        <li>Once you've made your selection, our culinary experts carefully curate your order. Every ingredient, from farm-fresh produce to premium cuts of meat, is sourced for its quality and flavor.</li>
-                        <li>Your customized Edenmade box is then packed with precision, ensuring that each ingredient is measured and portioned to perfection. This attention to detail guarantees that you have everything you need to create delicious meals and snacks at home.</li>
-                        <li>Enjoy the convenience of doorstep delivery. Your Edenmade box arrives on a schedule that fits your lifestyle, eliminating the need for last-minute grocery runs.</li>
-                        <li>Follow our easy-to-follow recipes crafted by our chefs. Whether you’re preparing a hearty dinner or a quick snack, our recipes are designed to make cooking enjoyable and stress-free.</li>
-                        <li>We understand that preferences may change or you may want to add extra treats. That’s why our platform allows you to easily customize your order with additional snacks or sides at any time.</li>
-                    </ol>
-                    <p>At Edenmade, our commitment extends beyond delivering delicious meals and snacks. We deeply value our customers and their satisfaction is at the heart of everything we do. From our dedicated customer support team to our commitment to sourcing high-quality ingredients, we prioritize your experience.</p>
-                    <p>We believe in fostering a community where cooking is a joy and meals bring people together. Whether you're exploring new culinary adventures or rediscovering family favorites, Edenmade is here to support you every step of the way.</p>
-                    <p>Join us in experiencing the pleasure of cooking and dining with Edenmade. Discover a fresher, more inspired way to enjoy wholesome meals and flavorful snacks, crafted with care and delivered with convenience.</p>
+                    <h1 className={"text-center my-3 aj-site-logo"}>Recipes</h1>
+                    <div className="row">
+                        {recipes?.map((recipe) => (
+                            <div key={recipe.recipe_id} className="col-md-3 mb-4">
+                                <div className="card cursor-pointer"  onClick={() => openRecipeModal(recipe)}>
+                                    <img
+                                        src={`/edenmade/meal.png`}
+                                        className="card-img-top"
+                                        alt={recipe.title}
+                                    />
+                                    <div className="card-body">
+                                        <h5 className="card-title ">{recipe.title}</h5>
+                                        <p className="card-text">Category: {recipe.category_name}</p>
+                                        <p className="card-text">Price: ${recipe.price}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
+
+            {/* Modal for displaying recipe details */}
+            {selectedRecipe && (
+                <div className="modal fade show shadow-lg" tabIndex="-1" role="dialog" style={{ display: "block" }}>
+                    <div className="modal-dialog modal-lg" role="document">
+                        {/* Use modal-lg class for a larger width */}
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title aj-site-logo">{selectedRecipe.title}</h5>
+                                <button type="button" className="btn-close" onClick={closeRecipeModal}>
+                                    <i className="fi fi-rs-circle-xmark"></i>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <img
+                                    src={`/edenmade/meal.png`}
+                                    className="card-img-top"
+                                    alt={selectedRecipe.title}
+                                />
+                                <p>Category: {selectedRecipe.category_name}</p>
+                                <p>Price: ${selectedRecipe.price}</p>
+                                {/* Add more details as needed */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* End of Modal */}
         </div>
     );
 }

@@ -61,6 +61,20 @@ export const updateOrderAPI = async (req) => {
         console.error("Updating Order  failed:", error);
     }
 };
+export const contactUs = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for login
+        const response = await axios.post(`${config.BaseUrl}/auth/contact`, req);
+
+        // Assuming the response contains user data upon successful login
+        const {data} = response;
+        return data;
+    } catch (error) {
+        toast.error("Sending Message Failed")
+        // Handle login error, such as displaying error message
+        console.error("Sending Message Failed:", error);
+    }
+};
 
 export const getCategoriesWithRecipes = async () => {
     try {
@@ -75,6 +89,22 @@ export const getCategoriesWithRecipes = async () => {
         toast.error("Getting Categories Failed!")
         // Handle login error, such as displaying error message
         console.error("Categories failed:", error);
+    }
+};
+
+export const getAllRecipes = async () => {
+    try {
+        console.log('getAllRecipes')
+        // Make HTTP POST request to your backend for login
+        const response = await axios.get(`${config.BaseUrl}/recipes`);
+
+        // Assuming the response contains user data upon successful login
+        console.log('getAllRecipes:', response.data)
+        return response.data;
+    } catch (error) {
+        toast.error("Getting All Recipes Failed!")
+        // Handle login error, such as displaying error message
+        console.error("Recipes failed:", error);
     }
 };
 
