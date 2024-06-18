@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ProductSummary from "../components/ProductSummary";
 import {
     generate_stripe_subscription,
@@ -22,6 +22,7 @@ import {useAuth} from "../auth_v2/authContext.jsx";
 export default function OrderFlow() {
     const navigate = useNavigate();
     const [currentState, setCurrentState] = useState(1);
+    const [highestStateReached, setHighestStateReached] = useState(1);
     const recipePerWeekOptions = getRecipePerWeek();
     const [categories, setCategories] = useState([]);
     const peopleOptions = getPeoplePerWeek();
@@ -39,7 +40,20 @@ export default function OrderFlow() {
         email: "",
         password: ""
     });
-
+    const [errors, setErrors] = useState({email: '', password: ''});
+    const states = [
+        {id: 1, icon: 'fi fi-sr-ticket-alt', label: 'Select Plan'},
+        {id: 2, icon: 'fi fi-sr-user', label: 'Register'},
+        {id: 3, icon: 'fi fi-br-id-badge', label: 'Details'},
+        {id: 4, icon: 'fi fi-sr-credit-card', label: 'Checkout'},
+        {id: 5, icon: 'fi fi-sr-bowl-rice', label: 'Select Meals'}
+    ];
+    const updateState = (newState) => {
+        setCurrentState(newState);
+        if (newState > highestStateReached) {
+            setHighestStateReached(newState);
+        }
+    };
 // Function to update order flow properties
     const updateOrderFlow = (prop, value) => {
         setOrderFlow(prevState => ({
@@ -48,7 +62,7 @@ export default function OrderFlow() {
         }));
     };
     const updateUserDetails = (prop, value) => {
-        const updatedUser = { ...user, [prop]: value };
+        const updatedUser = {...user, [prop]: value};
         // Update user details using setUserDetails function
         setUserDetails(updatedUser);
     };
@@ -58,6 +72,48 @@ export default function OrderFlow() {
             ...prevState,
             [prop]: value
         }));
+    };
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        const passwordRegex = /^(?=.*[A-Z]).{8,}$/;
+        return passwordRegex.test(password);
+    };
+    const handleEmailChange = (e) => {
+        const email = e.target.value;
+        updateUserLogin('email', email);
+        const validate = validateEmail(email);
+        if (!validate) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                email: 'Invalid email format'
+            }));
+        } else {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                email: ''
+            }));
+        }
+    };
+
+    const handlePasswordChange = (e) => {
+        const password = e.target.value;
+        updateUserLogin('password', password);
+        const validate = validatePassword(password);
+        if (!validate) {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                password: 'Password must be at least 8 characters long and include at least one uppercase letter'
+            }));
+        } else {
+            setErrors(prevErrors => ({
+                ...prevErrors,
+                password: ''
+            }));
+        }
     };
     useEffect(() => {
         // Fetch categories when the component mounts
@@ -93,7 +149,6 @@ export default function OrderFlow() {
                 } else {
                     updateOrderFlow('selectedRecipes', [...orderFlow.selectedRecipes, value]);
                 }
-                console.log('orderFlow: ',orderFlow )
                 break;
         }
     };
@@ -112,18 +167,25 @@ export default function OrderFlow() {
             console.error("Please fill in all required fields");
             return;
         }
+        if (user && !user.customer_id) {
+            updateState(2);
+        } else {
+            toast.success("User already signed up: " + user.first_name + ' ' + user.last_name);
+            updateState(3);
+        }
         // All required fields are filled, proceed to the next step
-        setCurrentState(2)
     };
-    const goToStep4 = async () => {
+    const goToStep4 = async (indicator = true) => {
         // Validate that all required fields are filled
         if (!user.first_name || !user.last_name || !user.phone_number || !user.address) {
             toast.error("Please fill in all required fields");
             console.error("Please fill in all required fields");
         } else {
-            const data = await updateCustomerDetails(user);
-            toast.success("Customer details updated Successfully");
-            setCurrentState(4)
+            if (indicator) {
+                const data = await updateCustomerDetails(user);
+                toast.success("Customer details updated Successfully");
+            }
+            updateState(4);
 
         }
 
@@ -145,12 +207,9 @@ export default function OrderFlow() {
                 const email = userInfo.email;
                 // const indicator = getIndicator(); // Replace this with your logic to get the indicator
 
-                console.log('Email:', email);
-                // console.log('Indicator:', indicator);
                 if (email) {
                     await makeSocialLoginCall(email, 'G')
                 }
-                console.log('Token Response:', tokenResponse);
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -162,11 +221,9 @@ export default function OrderFlow() {
         setUserDetails(resp);
 
         setCurrentState(3)
-        console.log('Resp: ', resp)
     }
     const FacebookSignIn = () => {
         const responseFacebook = (response) => {
-            console.log(response);
             // Handle the successful authentication response
         };
 
@@ -175,22 +232,27 @@ export default function OrderFlow() {
             // Handle failure
         };
     }
-    const goToStep3 = async () => {
+    const goToStep3 = async (indicator = true) => {
         // Validate that all required fields are filled
         if (!userLogin.email || !userLogin.password) {
             // If any required field is missing, show an error or handle it as needed
             toast.error("Please fill in all required fields");
             console.error("Please fill in all required fields");
         } else {
-            try {
-                const data = await signup(userLogin);
-                toast.success("SignUp User Successfully");
-                setUserDetails(data);
+            if (indicator) {
+                try {
+                    const data = await signup(userLogin);
+                    toast.success("SignUp User Successfully");
+                    setUserDetails(data);
 
-                setCurrentState(3)
+                    updateState(3);
 
-            } catch (error) {
-                console.error('Error during sign-up:', error);
+                } catch (error) {
+                    console.error('Error during sign-up:', error);
+                }
+            } else {
+                updateState(3);
+
             }
         }
     };
@@ -204,10 +266,8 @@ export default function OrderFlow() {
         payload['meals_per_week'] = orderFlow.selectedRecipePerWeek
         payload['selected_recipes'] = orderFlow.selectedRecipes.join(',')
         payload['number_of_people'] = orderFlow.selectedPeople
-        console.log('Payload: ', payload)
         const order_resp = await placeOrder(payload)
         if (order_resp) {
-            console.log('placeOrder: ', order_resp.order_id)
             localStorage.setItem('order_id', order_resp.order_id)
             proccedToStripe(order_resp.order_id)
 
@@ -216,7 +276,6 @@ export default function OrderFlow() {
     const proccedToStripe = async (order_id) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
         savingData();
-        console.log('user: ', user)
         const {priceId, productId} = await generate_stripe_subscription({
             productName: 'edenmade_' + order_id,
             price: orderFlow.totalPrice.toFixed(2)
@@ -245,6 +304,25 @@ export default function OrderFlow() {
         const keys = Object.keys(localStorage);
     }
 
+    const validateState = (state) => {
+        if (state > currentState) {
+            // Handle validation when trying to go to a future state
+            if (state === 2) {
+                goToStep2();
+            } else if (state === 3) {
+                goToStep3(false);
+            } else if (state === 4) {
+                goToStep4(false);
+            }
+        } else {
+            // Allow going back to a completed state
+            if (state === 2) {
+                goToStep2();
+            } else {
+                setCurrentState(state);
+            }
+        }
+    };
 
     return (
         <div className="container my-5">
@@ -252,38 +330,27 @@ export default function OrderFlow() {
                 <div className="col-12 order-progress-bar">
                     <div className="aj-drop-shadow background-white p-3 text-center">
                         <ul className="progress-bar-status p-0">
-                            <li className="completed d-block d-md-inline-block mb-3 mb-md-0">
-                                <i className="fi fi-sr-ticket-alt"></i>
-                                <span>Select Plan</span>
-                            </li>
-                            <li className="status-divider d-none d-md-inline-block">
-                                <hr/>
-                            </li>
-                            <li className="active d-block d-md-inline-block mb-3 mb-md-0">
-                                <i className="fi fi-sr-user"></i>
-                                <span>Register</span>
-                            </li>
-                            <li className="status-divider d-none d-md-inline-block">
-                                <hr/>
-                            </li>
-                            <li className="d-block d-md-inline-block mb-3 mb-md-0">
-                                <i className="fi fi-br-id-badge"></i>
-                                <span>Details</span>
-                            </li>
-                            <li className="status-divider d-none d-md-inline-block">
-                                <hr/>
-                            </li>
-                            <li className="d-block d-md-inline-block mb-3 mb-md-0">
-                                <i className="fi fi-sr-credit-card"></i>
-                                <span>Checkout</span>
-                            </li>
-                            <li className="status-divider d-none d-md-inline-block">
-                                <hr/>
-                            </li>
-                            <li className="d-block d-md-inline-block mb-3 mb-md-0">
-                                <i className="fi fi-sr-bowl-rice"></i>
-                                <span>Select Meals</span>
-                            </li>
+                            {states.map((state, index) => {
+                                const isCompleted = state.id <= highestStateReached;
+                                const isActive = state.id === currentState;
+
+                                return (
+                                    <React.Fragment key={state.id}>
+                                        <li
+                                            className={`${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''} d-block d-md-inline-block mb-3 mb-md-0 cursor-pointer`}
+                                            onClick={() => isCompleted ? validateState(state.id) : null}
+                                        >
+                                            <i className={state.icon}></i>
+                                            <span>{state.label}</span>
+                                        </li>
+                                        {index < states.length - 1 && (
+                                            <li className="status-divider d-none d-md-inline-block">
+                                                <hr/>
+                                            </li>
+                                        )}
+                                    </React.Fragment>
+                                );
+                            })}
                         </ul>
                     </div>
                 </div>
@@ -431,8 +498,7 @@ export default function OrderFlow() {
                                         placeholder="Your Email Address"
                                         className="form-control mb-3"
                                         value={userLogin.email} // Bind the value to the state
-                                        onChange={(e) => updateUserLogin('email', e.target.value)} // Handle input changes
-                                    />
+                                        onChange={handleEmailChange}/>
                                     <input
                                         required
                                         type="password"
@@ -441,14 +507,18 @@ export default function OrderFlow() {
                                         placeholder="Password"
                                         className="form-control mb-3"
                                         value={userLogin.password} // Bind the value to the state
-                                        onChange={(e) => updateUserLogin('password', e.target.value)} // Handle input changes
+                                        onChange={handlePasswordChange}
                                     />
+                                    {errors.email && <div className={'form-error'}>{errors.email}</div>}
+                                    {errors.password && <div className={'form-error'}>{errors.password}</div>}
+
                                     <div className="form-check mb-3">
                                         {/* Other form elements... */}
                                     </div>
 
                                     <button
                                         className="w-100 btn btn-primary aj-button body-text-small fw-700"
+                                        disabled={errors.email || errors.password}
                                         onClick={goToStep3}
                                     >
                                         Continue
@@ -607,7 +677,7 @@ export default function OrderFlow() {
                                                 name="postal_code"
                                                 placeholder="Postal Code"
                                                 value={user?.postal_code}
-                                                inputType={'n'}
+                                                inputType={'b'}
                                                 onChange={(value) => updateUserDetails("postal_code", value)}
                                             />
                                         </div>
@@ -640,11 +710,13 @@ export default function OrderFlow() {
                         >
                             <h1 className="text-center">Payment Details</h1>
                             <div className="row mt-5">
-                                <div className="col-md-6 col-12 d-flex justify-content-center align-items-center px-md-5 px-3 pt-3 pb-0">
+                                <div
+                                    className="col-md-6 col-12 d-flex justify-content-center align-items-center px-md-5 px-3 pt-3 pb-0">
                                     <button
                                         onClick={makePayment}
                                         className="btn btn-primary aj-button body-text-small fw-700 background-secondary border-0">
-                                        <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i> Continue with Stripe
+                                        <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i> Continue
+                                        with Stripe
                                     </button>
                                 </div>
 

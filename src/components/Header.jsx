@@ -87,22 +87,22 @@ export default function Header() {
                             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                                 <li className="nav-item">
                                     <Link to="/about-us" className="nav-link">
-                                        About Us
+                                        About us
                                     </Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/how-it-works" className="nav-link">
-                                        How it Works
+                                        How it works
                                     </Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/our-recipes" className="nav-link">
-                                        Our Recipes
+                                        Our recipe
                                     </Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link to="/contact-us" className="nav-link">
-                                        Contact Us
+                                        Contact us
                                     </Link>
                                 </li>
                             </ul>
