@@ -17,6 +17,11 @@ import Login from "./pages/Login.jsx";
 import Footer from "./components/Footer.jsx";
 import Header from "./components/Header.jsx";
 import {GoogleOAuthProvider} from "@react-oauth/google";
+import Aboutus from "./pages/Aboutus.jsx";
+import Howitworks from "./pages/howitworks.jsx";
+import Recipes from "./pages/recipes.jsx";
+import Privacy from "./pages/privacy.jsx";
+import Terms from "./pages/Terms.jsx";
 
 function App({routes}) {
     return (
@@ -27,6 +32,11 @@ function App({routes}) {
                 <div className="content">
                     <Routes>
                         <Route path="/" element={<LandingPage/>}/>
+                        <Route path="about" element={<Aboutus/>}/>
+                        <Route path="how-it-works" element={<Howitworks/>}/>
+                        <Route path="recipes" element={<Recipes/>}/>
+                        <Route path="privacy" element={<Privacy/>}/>
+                        <Route path="terms" element={<Terms/>}/>
                         <Route path="order-flow" element={<OrderFlow/>}/>
                         <Route path="login" element={<Login/>}/>
                         <Route path="my-menu" element={<MyMenu/>}/>

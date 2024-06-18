@@ -1,4 +1,5 @@
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -20,25 +21,25 @@ export default function Footer() {
                 <b>Explore</b>
               </p>
               <ul className="footer-menu">
-                <li>
-                  <a className="body-text-small" href="/about">
-                    About Us
-                  </a>
+                <li className="nav-item">
+                  <NavLink to="/about" className="nav-link body-text-small" activeClassName="active">
+                    About us
+                  </NavLink>
                 </li>
-                <li>
-                  <a className="body-text-small" href="#">
-                    How it Works
-                  </a>
+                <li className="nav-item">
+                  <NavLink to="/how-it-works" className="nav-link body-text-small" activeClassName="active">
+                    How it works
+                  </NavLink>
                 </li>
-                <li>
-                  <a className="body-text-small" href="#">
-                    Our Recipes
-                  </a>
+                <li className="nav-item">
+                  <NavLink to="/our-recipes" className="nav-link body-text-small" activeClassName="active">
+                    Our recipe
+                  </NavLink>
                 </li>
-                <li>
-                  <a className="body-text-small" href="#">
-                    Contact Us
-                  </a>
+                <li className="nav-item">
+                  <NavLink to="/contact-us" className="nav-link body-text-small" activeClassName="active">
+                    Contact us
+                  </NavLink>
                 </li>
               </ul>
             </div>
@@ -48,19 +49,14 @@ export default function Footer() {
               </p>
               <ul className="footer-menu">
                 <li>
-                  <a className="body-text-small" href="#">
-                    Privacy Policy
-                  </a>
+                  <NavLink to="/privacy" className="nav-link body-text-small" activeClassName="active">
+                  Privacy Policy
+                  </NavLink>
                 </li>
                 <li>
-                  <a className="body-text-small" href="#">
-                    Cookie Policy
-                  </a>
-                </li>
-                <li>
-                  <a className="body-text-small" href="#">
-                    Terms & Conditions
-                  </a>
+                  <NavLink to="/terms" className="nav-link body-text-small" activeClassName="active">
+                  Terms & Conditions
+                  </NavLink>
                 </li>
               </ul>
             </div>

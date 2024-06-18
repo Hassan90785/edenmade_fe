@@ -532,7 +532,7 @@ a {
     .upcoming-date {
         display: inline-block;
         width: 100px; /* Set the width to create square boxes */
-        height: 100px; /* Set the height to create square boxes */
+        height: 90px; /* Set the height to create square boxes */
         padding: 10px;
         border: 3px solid var(--theme-secondary);
         background: transparent;

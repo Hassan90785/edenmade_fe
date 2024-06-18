@@ -43,14 +43,14 @@ export default function MyMenu() {
                 let userStr = localStorage.getItem('user')
                 let userJSON = null;
                 if (userStr) {
-                   userJSON = JSON.parse(userStr)
+                    userJSON = JSON.parse(userStr)
                 }
 
                 const orderInfo = await getOrderInfo({customer_id: userJSON?.customer_id})
                 console.log('orderInfo: ', orderInfo)
                 const deliveryDate = getDeliveryDateWithNullPayment(orderInfo);
-                console.log('deliveryDate:: ', deliveryDate )
-                if(deliveryDate){
+                console.log('deliveryDate:: ', deliveryDate)
+                if (deliveryDate) {
                     const date = new Date(deliveryDate);
                     date.setDate(date.getDate() - 2);
 
@@ -157,7 +157,7 @@ export default function MyMenu() {
                         <div className="row">
                             <div className="col-md-4 col-12">
                                 <p className="text-white body-text-extra-small mb-0">
-                                    Upcomming
+                                    Latest Delivery Date
                                 </p>
                                 <h1 className="text-white fs-1 mt-3">
                                     {renderFormattedDate(upcoming)}
@@ -177,6 +177,7 @@ export default function MyMenu() {
                                     <i className="fi fi-sr-angle-left fs-4"></i>
                                 </button>
                                 <div className="upcoming-date-wrapper mx-2">
+                                        <p className="text-white body-text-extra-small mb-0">Weekly Subscription Dates</p>
                                     {/* Map through each order detail */}
                                     {orderDetails?.order_details?.map((weekDetail, index) => {
                                         // Parse delivery date string into a Date object
@@ -190,18 +191,21 @@ export default function MyMenu() {
                                         const [day, date, month] = formattedDate.split(' ');
 
                                         return (
-                                            <div
-                                                key={index}
-                                                className={`upcoming-date text-center mx-2 
+                                            <>
+
+                                                <div
+                                                    key={index}
+                                                    className={`upcoming-date text-center mx-2 
                 ${selectedWeek === weekDetail.week ? 'active' : ''}`}
-                                                onClick={() => handleDeliverySelection(weekDetail)}
-                                            >
+                                                    onClick={() => handleDeliverySelection(weekDetail)}
+                                                >
                 <span className="date">
                     {day} <br/> {/* Displays only the day */}
                     <strong>{addSuffix(month)}</strong>  <br/> {/* Displays only the month */}
                     {date}{/* Displays only the date */}
                 </span>
-                                            </div>
+                                                </div>
+                                            </>
                                         );
                                     })}
                                 </div>
