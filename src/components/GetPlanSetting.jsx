@@ -8,9 +8,20 @@ const GetPlanSetting = ({data}) => {
     const [plan, setPlan] = useState(data);
     const formatSimpleDate = (dateString) => {
         const date = new Date(dateString);
-        const options = {weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'};
+        let daysToAdd = 5;
+
+        while (daysToAdd > 0) {
+            date.setDate(date.getDate() + 1);
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) { // 0 = Sunday, 6 = Saturday
+                daysToAdd--;
+            }
+        }
+
+        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
         return date.toLocaleDateString('en-US', options);
     };
+
     useEffect(() => {
         setPlan(data);
     }, [data]);

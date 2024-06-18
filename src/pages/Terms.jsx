@@ -37,7 +37,7 @@ export default function Terms() {
 
                     <h2   className={'fw-bold'}>10. Contact Us</h2>
                     <p>If you have any questions about these terms and conditions, please contact us at:</p>
-                    <p>Edenmade<br />
+                    <p  className={'fw-bold'}>Edenmade<br />
                         123 Meal Kit Way<br />
                         Anytown, USA<br />
                         info@edenmade.com<br />

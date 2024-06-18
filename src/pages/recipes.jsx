@@ -37,7 +37,7 @@ export default function Recipes() {
         <div className="container my-5 aj-drop-shadow background-white">
             <div className="row py-3">
                 <div className="col">
-                    <h1 className={"text-center my-3 aj-site-logo"}>Recipes</h1>
+                    <h1 className={"text-center my-3 aj-site-logo"}>Our Recipes</h1>
                     <div className="row">
                         {recipes?.map((recipe) => (
                             <div key={recipe.recipe_id} className="col-md-3 mb-4">

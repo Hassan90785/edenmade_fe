@@ -122,14 +122,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      <section className="faq-section container">
-        <div className="row">
-          <div className="col-12">
-            <h1 className="mb-3">Frequently Asked Questions</h1>
-          </div>
-        </div>
-      </section>
     </>
   );
 }
