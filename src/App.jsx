@@ -23,6 +23,7 @@ import Recipes from "./pages/recipes.jsx";
 import Privacy from "./pages/privacy.jsx";
 import Terms from "./pages/Terms.jsx";
 import Contactus from "./pages/Contactus.jsx";
+import FAQ from "./pages/FAQ.jsx";
 
 function App({routes}) {
     return (
@@ -38,6 +39,7 @@ function App({routes}) {
                         <Route path="how-it-works" element={<Howitworks/>}/>
                         <Route path="recipes" element={<Recipes/>}/>
                         <Route path="privacy" element={<Privacy/>}/>
+                        <Route path="faq" element={<FAQ/>}/>
                         <Route path="terms" element={<Terms/>}/>
                         <Route path="order-flow" element={<OrderFlow/>}/>
                         <Route path="login" element={<Login/>}/>

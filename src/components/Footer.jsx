@@ -58,6 +58,11 @@ export default function Footer() {
                   Terms & Conditions
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink to="/faq" className="nav-link body-text-small" activeClassName="active">
+                  FAQ
+                  </NavLink>
+                </li>
               </ul>
             </div>
             <div className="col-lg-4 col-12 text-center text-lg-start">

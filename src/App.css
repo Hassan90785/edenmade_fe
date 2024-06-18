@@ -262,7 +262,13 @@ a {
 .btn-close:hover {
     color: var(--theme-primary);
 }
-
+.accordion-button:not(.collapsed) {
+    color: var(--theme-primary);
+    background-color: white;
+}.accordion-button:focus {
+     outline: 0;
+      box-shadow: none;
+ }
 .google-button {
     background-color: #1a73e8;
     border-color: #1a73e8;
