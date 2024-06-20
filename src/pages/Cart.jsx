@@ -12,6 +12,8 @@ import {
 } from "../rest_apis/restApi.jsx";
 import {loadStripe} from "@stripe/stripe-js";
 import {useAuth} from "../auth_v2/authContext.jsx";
+import SnackSummary from "../components/SnackSummary.jsx";
+import {toast} from "react-toastify";
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -24,6 +26,7 @@ export default function Cart() {
         snacks: []
     });
     const [showAddon, setShowAddon] = useState(false);
+    const [cartUpdated, setCartUpdated] = useState(false);
     const handleButtonClickMyMenu = () => {
         navigate("/change-meal");
     };
@@ -90,15 +93,31 @@ export default function Cart() {
 
     }
     const makeSnackOrder = async () => {
-        console.log('snackOrder', snacksOrder);
-        const result = await addNewSnacksMapping(snacksOrder);
-        console.log('result', result);
-        await proccedToStripe(result.order_id, result.total_amount);
-
+        if (cartUpdated) {
+            console.log('snackOrder', snacksOrder);
+            const result = await addNewSnacksMapping(snacksOrder);
+            console.log('result', result);
+            await proccedToStripe(result.order_id, result.total_amount);
+        } else {
+            toast.warning('Please update your cart first!')
+        }
     }
     const addNewAddOns = (addOns) => {
         console.log('addNewAddOns: ', addOns);
         updateSnacksOrderDetails('snacks', addOns)
+    };
+
+    const handleClearCart = () => {
+        setSnacksOrder(prevState => ({
+            ...prevState,
+            snacks: []
+        }));
+        setShowAddon(false)
+        setCartUpdated(false)
+    };
+    const handleUpdateCart = () => {
+        setCartUpdated(true)
+        toast.success('Cart updated successfully!')
     };
     const proccedToStripe = async (order_id, total_amount) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
@@ -185,17 +204,19 @@ export default function Cart() {
                             <div className="col-md-8 col-12 text-end my-auto">
                                 {snacksOrder.snacks && snacksOrder.snacks.length > 0 &&
                                     <button onClick={makeSnackOrder}
+                                            disabled={!cartUpdated}
                                             className="btn btn-primary aj-button background-secondary  body-text-small  border-0 fw-700 px-5 me-3">
                                         <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i>{" "}
                                         Continue with Stripe
                                     </button>
                                 }
-                                <button className="btn btn-transparent aj-button body-text-small fw-700 px-5 me-3">
+                                <button className="btn btn-transparent aj-button body-text-small fw-700 px-5 me-3"
+                                        onClick={handleClearCart}>
                                     Empty Cart
                                 </button>
                                 <button
                                     className="btn btn-primary aj-button body-text-small fw-700 px-5"
-                                    onClick={handleButtonClickMyMenu}
+                                    onClick={handleUpdateCart}
                                 >
                                     Update Cart
                                 </button>
@@ -215,6 +236,17 @@ export default function Cart() {
                                         selectedRecipePerWeek={orderDetails?.activeWeekOrderDetails?.meals_per_week}
                                         updateTotalPrice={updateTotalPrice}
                                         selectedRecipes={orderDetails?.activeWeekOrderDetails?.amount_paid}/>
+                    </div>
+                </div>
+                <div className="row my-5">
+                    <div className="col-12">
+                        {snacksOrder && snacksOrder.snacks && snacksOrder.snacks.length > 0 && (
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <SnackSummary snacksOrder={snacksOrder}></SnackSummary>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
