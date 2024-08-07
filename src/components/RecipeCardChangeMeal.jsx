@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { Modal } from 'react-bootstrap';
 
-function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRecipe, onUpdateOrder}) {
-    const {recipe_id, title, category_name} = recipe;
-
+function RecipeCardChangeMeal({ recipe, selectedOrder, spiceLevels, onAddRemoveRecipe, onUpdateOrder }) {
+    const { recipe_id, title, category_name } = recipe;
 
     // Find the recipe in the order details
     const orderedRecipe = selectedOrder.items.find(item => item.recipe_id === recipe_id);
@@ -11,14 +11,17 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
     const spiceLevel = orderedRecipe ? spiceLevels.find(spice => spice.spice_level_id === orderedRecipe.spice_level_id) : null;
     const [selectedSpiceLevel, setSelectedSpiceLevel] = useState(spiceLevel);
 
+    const [showModal, setShowModal] = useState(false);
+
     const handleAddRemoveRecipe = () => {
-        onAddRemoveRecipe({...recipe, spice_level_id: selectedSpiceLevel ? selectedSpiceLevel.spice_level_id : null});
+        onAddRemoveRecipe({ ...recipe, spice_level_id: selectedSpiceLevel ? selectedSpiceLevel.spice_level_id : null });
     };
 
     const handleSpiceLevelChange = (event) => {
         const selectedSpiceId = parseInt(event.target.value);
         setSelectedSpiceLevel(spiceLevels.find(spice => spice.spice_level_id === selectedSpiceId));
-        onUpdateOrder({...selectedOrder,
+        onUpdateOrder({
+            ...selectedOrder,
             items: selectedOrder.items.map(item => item.recipe_id === recipe_id ? {
                 ...item,
                 spice_level_id: selectedSpiceId
@@ -30,11 +33,21 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
         event.stopPropagation();
     };
 
+    const handleExpandClick = (event) => {
+        event.stopPropagation();
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div className={`col-md-6 col-lg-3 col-12 mt-3`}>
             <div className={`card border-0 rounded-0 aj-drop-shadow ${orderedRecipe ? "ordered_recipe" : ""}`}
                  onClick={orderedRecipe ? handleAddRemoveRecipe : null}>
                 <div className="position-relative">
+                    <i className={"fi fi-bs-expand-arrows position-absolute expand-btn"} onClick={handleExpandClick}></i>
                     <img
                         className="card-img-top rounded-0"
                         src="/edenmade/meal.png"
@@ -57,8 +70,8 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
                             </p>
                         </div>
                     </div>
-                        {spiceLevels && (
-                            <div className="row">
+                    {spiceLevels && (
+                        <div className="row">
                             <div className="col">
                                 <select
                                     className="form-select border-select"
@@ -75,10 +88,24 @@ function RecipeCardChangeMeal({recipe, selectedOrder, spiceLevels, onAddRemoveRe
                                     ))}
                                 </select>
                             </div>
-                            </div>
-                        )}
+                        </div>
+                    )}
                 </div>
             </div>
+
+            {/* Modal for image expansion */}
+            <Modal show={showModal} onHide={handleCloseModal} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>{title}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                <img
+                        className="img-fluid w-100"
+                        src="/edenmade/meal.png"
+                        alt="Expanded meal image"
+                    />
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }

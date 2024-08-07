@@ -79,6 +79,11 @@ export default function Header() {
                                 </NavLink>
                             </li>
                             <li className="nav-item">
+                                <NavLink to="/faq" className="nav-link " activeClassName="active">
+                                    FAQ
+                                </NavLink>
+                            </li>
+                            <li className="nav-item">
                                 <NavLink to="/how-it-works" className="nav-link" activeClassName="active">
                                     How it works
                                 </NavLink>
