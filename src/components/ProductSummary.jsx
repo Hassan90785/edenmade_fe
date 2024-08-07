@@ -10,7 +10,7 @@ export default function ProductSummary({selectedPeople, selectedRecipePerWeek, s
         const boxPrice = prices.find(price => price.id === 'boxPrice').value;
         const servings = selectedPeople * selectedRecipePerWeek;
         const pricePerServing = prices.find(price => price.id === 'pricePerServing').value;
-        const totalPrice = boxPrice + (servings * pricePerServing);
+        const totalPrice = (selectedRecipePerWeek * boxPrice) + (selectedPeople * pricePerServing);
         setTotalPrice(totalPrice);
         updateTotalPrice(totalPrice);
     }, [selectedPeople, selectedRecipePerWeek, selectedRecipes]);
@@ -29,10 +29,14 @@ export default function ProductSummary({selectedPeople, selectedRecipePerWeek, s
                 {prices.map(price => (
                     <div key={price.id} className="row">
                         <div className="col-6">
-                            <p className="body-text-small fw-bold mb-1">{price.label}</p>
+                            <p className="body-text-small fw-bold mb-1">{price.label}
+                                <span className={'ms-3'}>{price.id === 'boxPrice' ? selectedRecipePerWeek + ' x ' + price.value : selectedPeople + ' x ' + price.value}</span>
+                            </p>
                         </div>
                         <div className="col-6">
-                            <p className="body-text-small fw-bold mb-1 text-end">£{price.value.toFixed(2)}</p>
+                            <p className="body-text-small fw-bold mb-1 text-end">
+                                £ {price.id === 'boxPrice' ? ((selectedRecipePerWeek * price.value).toFixed(2)) : ((selectedPeople * price.value).toFixed(2))}
+                            </p>
                         </div>
                     </div>
                 ))}
