@@ -10,7 +10,6 @@ export default function Recipes() {
             try {
                 const resp = await getAllRecipes();
                 if (resp && resp.status === 1) {
-                    console.log('resp', resp.data)
                     setRecipes(resp.data);
                 }
             } catch (error) {
@@ -25,7 +24,6 @@ export default function Recipes() {
         setSelectedRecipe(recipe);
         // Example: Trigger modal display code here
         // You can use Bootstrap modal or any other modal library/modal component
-        console.log("Selected Recipe:", recipe);
     };
 
     const closeRecipeModal = () => {

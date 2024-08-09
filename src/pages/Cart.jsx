@@ -37,8 +37,6 @@ export default function Cart() {
     useEffect(() => {
         async function fetchActiveOrder() {
             try {
-                console.log('----------activeOrder--------')
-                console.log('user:::', user)
                 let userStr = localStorage.getItem('user')
                 let userJSON = null;
                 if (userStr) {
@@ -46,7 +44,6 @@ export default function Cart() {
                 }
                 if (userJSON && userJSON.customer_id) {
                     const activeOrder = await getActiveOrderInfo({customer_id: userJSON.customer_id})
-                    console.log('activeOrder', activeOrder)
                     setOrderDetails(activeOrder)
                 }
             } catch (error) {
@@ -75,7 +72,6 @@ export default function Cart() {
                     active_week: orderDetails.active_week,
                     order_id: orderDetails.order_id
                 });
-                console.log('getSnackOrder: ', getSnackOrderDetails)
             } catch (error) {
                 console.error("Error fetching getSnackOrder:", error);
             }
@@ -94,16 +90,13 @@ export default function Cart() {
     }
     const makeSnackOrder = async () => {
         if (cartUpdated) {
-            console.log('snackOrder', snacksOrder);
             const result = await addNewSnacksMapping(snacksOrder);
-            console.log('result', result);
             await proccedToStripe(result.order_id, result.total_amount);
         } else {
             toast.warning('Please update your cart first!')
         }
     }
     const addNewAddOns = (addOns) => {
-        console.log('addNewAddOns: ', addOns);
         updateSnacksOrderDetails('snacks', addOns)
     };
 
@@ -121,7 +114,6 @@ export default function Cart() {
     };
     const proccedToStripe = async (order_id, total_amount) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
-        console.log('user: ', user)
         const {priceId, productId} = await create_checkout_session_v2({
             productName: 'edenmade_snacks_' + order_id,
             price: total_amount.toFixed(2)

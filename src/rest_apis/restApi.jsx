@@ -9,7 +9,6 @@ export const getCategories = async () => {
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('getCategories:', data)
         return data;
     } catch (error) {
         toast.error("Getting Categories Failed!")
@@ -35,7 +34,6 @@ export const getOrderInfo = async (req) => {
 export const getActiveOrderInfo = async (req) => {
     try {
         // Make HTTP POST request to your backend for login
-        console.log('req: ', req)
         const response = await axios.get(`${config.BaseUrl}/orders/activeOrder/`, { params: req });
 
         // Assuming the response contains user data upon successful login
@@ -83,7 +81,6 @@ export const getCategoriesWithRecipes = async () => {
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('getCategoriesWithRecipes:', data)
         return data;
     } catch (error) {
         toast.error("Getting Categories Failed!")
@@ -94,12 +91,10 @@ export const getCategoriesWithRecipes = async () => {
 
 export const getAllRecipes = async () => {
     try {
-        console.log('getAllRecipes')
         // Make HTTP POST request to your backend for login
         const response = await axios.get(`${config.BaseUrl}/recipes`);
 
         // Assuming the response contains user data upon successful login
-        console.log('getAllRecipes:', response.data)
         return response.data;
     } catch (error) {
         toast.error("Getting All Recipes Failed!")
@@ -116,7 +111,6 @@ export const getSpiceLevels = async () => {
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('getSpiceLevels:', data)
         return data;
     } catch (error) {
         toast.error("Getting Spices Failed!")
@@ -131,7 +125,6 @@ export const getSnacks = async () => {
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('getSnacks:', data)
         return data;
     } catch (error) {
         toast.error("Getting Snacks Failed!")
@@ -147,7 +140,6 @@ export const addNewSnacksMapping = async (req) => {
 
         // Assuming the response contains user data upon successful login
         const {data} = response.data;
-        console.log('addNewSnacksMapping:', data)
         return data;
     } catch (error) {
         toast.error("Getting addNewSnacksMapping Failed!")
@@ -163,7 +155,6 @@ export const signup = async (req) => {
         const response = await axios.post(`${config.BaseUrl}/auth/signup`, req);
         // Assuming the response contains user data upon successful signup
         const {data} = response.data;
-        console.log('signup:', data);
         return data; // Return data in case of success
     } catch (error) {
         // Handle signup error, such as displaying error message
@@ -178,7 +169,6 @@ export const socialLogin = async (req) => {
         const response = await axios.post(`${config.BaseUrl}/auth/social_login`, req);
         // Assuming the response contains user data upon successful signup
         const {data} = response.data;
-        console.log('social_login:', data);
         return data; // Return data in case of success
     } catch (error) {
         // Handle signup error, such as displaying error message
@@ -193,12 +183,26 @@ export const placeOrder = async (req) => {
         const response = await axios.post(`${config.BaseUrl}/orders/place-order`, req);
         // Assuming the response contains user data upon successful signup
         const {data} = response.data;
-        console.log('placeOrder:', data);
         return data; // Return data in case of success
     } catch (error) {
         // Handle signup error, such as displaying error message
         toast.error("Placing Order  Failed!")
         console.error("placeOrder failed:", error);
+        throw error; // Rethrow the error for the caller to handle
+    }
+};
+export const deleteOrder = async (req) => {
+    try {
+        // Make HTTP POST request to your backend for signup
+        const response = await axios.post(`${config.BaseUrl}/orders/delete-order`, req);
+        // Assuming the response contains user data upon successful signup
+        const {data} = response.data;
+        console.log('deleteOrder:', data);
+        return data; // Return data in case of success
+    } catch (error) {
+        // Handle signup error, such as displaying error message
+        toast.error("Order  Failed!")
+        console.error("deleteOrder failed:", error);
         throw error; // Rethrow the error for the caller to handle
     }
 };

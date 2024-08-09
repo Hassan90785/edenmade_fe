@@ -30,7 +30,8 @@ export default function ProductSummary({selectedPeople, selectedRecipePerWeek, s
                     <div key={price.id} className="row">
                         <div className="col-6">
                             <p className="body-text-small fw-bold mb-1">{price.label}
-                                <span className={'ms-3'}>{price.id === 'boxPrice' ? selectedRecipePerWeek + ' x ' + price.value : selectedPeople + ' x ' + price.value}</span>
+                                <span
+                                    className={'ms-3'}>{price.id === 'boxPrice' ? (selectedRecipePerWeek || 1) + ' x ' + price.value : (selectedPeople || 1) + ' x ' + price.value}</span>
                             </p>
                         </div>
                         <div className="col-6">

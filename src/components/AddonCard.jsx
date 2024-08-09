@@ -7,7 +7,6 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
     const [selectedAddons, setSelectedAddons] = useState([]);
 
     const handleAddOnSelection = (snack) => {
-        console.log('handleAddOnSelection: ', snack);
         let addOn = [];
         if (canSelected) {
             const isSelected = selectedAddons.includes(snack);

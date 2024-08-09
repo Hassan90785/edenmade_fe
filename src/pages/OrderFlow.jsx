@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ProductSummary from "../components/ProductSummary";
 import {
+    deleteOrder,
     generate_stripe_subscription,
     getCategories,
     getPeoplePerWeek,
@@ -12,7 +13,7 @@ import {
     updateCustomerDetails
 } from "../rest_apis/restApi.jsx";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {loadStripe} from "@stripe/stripe-js";
 import {ValidatedInput} from "../components/ValidateInput.jsx";
 import {useGoogleLogin} from "@react-oauth/google";
@@ -40,6 +41,7 @@ export default function OrderFlow() {
         email: "",
         password: ""
     });
+    const location = useLocation();
     const [errors, setErrors] = useState({email: '', password: ''});
     const states = [
         {id: 1, icon: 'fi fi-sr-ticket-alt', label: 'Select Plan'},
@@ -48,6 +50,51 @@ export default function OrderFlow() {
         {id: 4, icon: 'fi fi-sr-credit-card', label: 'Checkout'},
         {id: 5, icon: 'fi fi-sr-bowl-rice', label: 'Select Meals'}
     ];
+
+
+    useEffect(() => {
+        // Define an async function inside useEffect to handle async operations
+        const handleError = async () => {
+            // Check URL for error parameter
+            const isError = location.search.includes('error');
+            console.log('Error::: ', isError);
+
+            if (isError) {
+                // Restore state from localStorage
+                const savedOrderFlow = localStorage.getItem('orderFlow');
+                const savedCurrentState = localStorage.getItem('currentState');
+                const savedUserState = localStorage.getItem('user');
+                const savedOrderId = localStorage.getItem('order_id');
+
+                if (savedOrderFlow) {
+                    setOrderFlow(JSON.parse(savedOrderFlow));
+                }
+
+                if (savedCurrentState) {
+                    setCurrentState(parseInt(savedCurrentState, 10));
+                }
+                if (savedUserState) {
+                    setUserDetails(JSON.parse(savedUserState));
+                }
+
+                if (savedOrderId) {
+                    console.log('savedOrderId::: ', savedOrderId);
+                    try {
+                        // Assuming deleteOrder is an async function that you have defined
+                        await deleteOrder({ order_id: Number(savedOrderId) });
+                        console.log('Order deleted successfully');
+                    } catch (error) {
+                        console.error('Error deleting order:', error);
+                    }
+                }
+            }
+        };
+
+        handleError();
+    }, []);
+
+
+
     const updateState = (newState) => {
         setCurrentState(newState);
         if (newState > highestStateReached) {

@@ -39,7 +39,6 @@ export default function MyMenu() {
     useEffect(() => {
         async function fetchData() {
             try {
-                console.log('user:::', user)
                 let userStr = localStorage.getItem('user')
                 let userJSON = null;
                 if (userStr) {
@@ -47,9 +46,7 @@ export default function MyMenu() {
                 }
 
                 const orderInfo = await getOrderInfo({customer_id: userJSON?.customer_id})
-                console.log('orderInfo: ', orderInfo)
                 const deliveryDate = getDeliveryDateWithNullPayment(orderInfo);
-                console.log('deliveryDate:: ', deliveryDate)
                 if (deliveryDate) {
                     const date = new Date(deliveryDate);
                     date.setDate(date.getDate() - 2);
@@ -68,23 +65,16 @@ export default function MyMenu() {
     }, []);
 
     useEffect(() => {
-        console.log('Setting Active Week')
         setActiveWeek();
     }, [orderDetails]);
     const setActiveWeek = () => {
         if (orderDetails && orderDetails.active_week) {
-            console.log('Setting Active Week')
             // Retrieve the order details for the active week
-            console.log('orderDetails: ', orderDetails)
             const activeWeek = orderDetails.active_week;
-            console.log('activeWeek: ', activeWeek)
             const activeWeekOrderDetails = orderDetails.order_details.find(order => order.week === activeWeek);
             const {order_details, ...cleanedOrderDetails} = orderDetails;
             cleanedOrderDetails['activeWeekOrderDetails'] = activeWeekOrderDetails
             localStorage.setItem('activeWeekOrder', JSON.stringify(activeWeekOrder))
-            console.log('activeWeekOrderDetails: ', activeWeekOrderDetails)
-            console.log('activeWeekOrder: ', activeWeekOrder)
-            console.log('order_details: ', order_details)
             setActiveWeekOrder(cleanedOrderDetails);
 
         }
@@ -105,16 +95,12 @@ export default function MyMenu() {
     useEffect(() => {
         async function fetchData() {
             try {
-                console.log('-----------getSnackOrderDetails----------: ')
-                console.log('activeWeekOrder: ', activeWeekOrder)
-                console.log('orderDetails: ', orderDetails)
                 if (activeWeekOrder) {
                     const getSnackOrderDetails = await getSnackOrder({
                         active_week: activeWeekOrder.active_week,
                         order_id: activeWeekOrder.order_id
                     });
                     setSnackOrderDetails(getSnackOrderDetails);
-                    console.log('getSnackOrder: ', getSnackOrderDetails)
                 }
             } catch (error) {
                 console.error("Error fetching getSnackOrder:", error);
@@ -125,18 +111,14 @@ export default function MyMenu() {
     }, [activeWeekOrder]);
 
     const handleDeliverySelection = (weekDetail) => {
-        console.log('weekDetail: ', weekDetail);
         setSelectedWeek(weekDetail.week)
     }
     const addNewAddOns = (weekDetail) => {
-        console.log('weekDetail: ', weekDetail);
         setSelectedWeek(weekDetail.week)
     }
     const getDeliveryDateWithNullPayment = (orders) => {
-        console.log('getDeliveryDateWithNullPayment', orders);
         if (orders && orders.order_details.length > 0) {
             const orderWithNullPayment = orders.order_details.find(order => order.payment_id === null);
-            console.log('getDeliveryDateWithNullPayment', orderWithNullPayment.delivery_date)
             return orderWithNullPayment ? orderWithNullPayment.delivery_date : null;
         } else {
             return null;

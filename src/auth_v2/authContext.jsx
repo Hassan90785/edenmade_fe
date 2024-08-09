@@ -57,7 +57,6 @@ export const AuthProvider = ({children}) => {
 
     const setUserDetails = (user) => {
         // Implement your logout logic here
-        console.log('Setting Up user: ', user)
         setUser(user);
     };
 

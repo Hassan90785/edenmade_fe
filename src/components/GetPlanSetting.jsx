@@ -36,19 +36,16 @@ const GetPlanSetting = ({data}) => {
             const resp = await pause_subscription({
                 subscription_id: plan?.subscription_id
             });
-            console.log('resp', resp)
         }
         if (code === 'C') {
             const resp = await cancel_subscription({
                 subscription_id: plan?.subscription_id
             });
-            console.log('resp', resp)
         }
         if (code === 'R') {
             const resp = await resume_subscription({
                 subscription_id: plan?.subscription_id
             });
-            console.log('resp', resp)
         }
 
         const orderInfo = await getPlanSettings({customer_id: plan?.customer_id})

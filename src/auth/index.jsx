@@ -17,8 +17,7 @@ export const useProvideAuth = () => {
   const [orderDetails, setOrderDetails] = useState(null);
   const [userData, setUserData] = useState(null);
   
-  console.log("userData",userData)
-   
+
   const provider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
   

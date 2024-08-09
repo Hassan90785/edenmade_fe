@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../auth_v2/authContext";
-import { toast } from "react-toastify";
+import React, {useEffect, useState} from "react";
+import {Link, NavLink, useLocation, useNavigate} from "react-router-dom";
+import {useAuth} from "../auth_v2/authContext";
+import {toast} from "react-toastify";
 import AccountInfo from "./AccountInfo.jsx";
 import GetPlanSetting from "./GetPlanSetting.jsx";
-import { getPlanSettings } from "../rest_apis/restApi.jsx";
+import {getPlanSettings} from "../rest_apis/restApi.jsx";
 
 export default function Header() {
-    const { user, logout, setUserDetails } = useAuth();
+    const {user, logout, setUserDetails} = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [plan, setPlan] = useState({});
@@ -15,7 +15,7 @@ export default function Header() {
     async function fetchData(userData) {
         try {
             if (userData && userData.customer_id) {
-                const orderInfo = await getPlanSettings({ customer_id: userData.customer_id });
+                const orderInfo = await getPlanSettings({customer_id: userData.customer_id});
                 setPlan(orderInfo);
             }
         } catch (error) {
@@ -24,6 +24,7 @@ export default function Header() {
     }
 
     const isSuccess = location.search.includes('success');
+    const isError = location.search.includes('error');
     const [showRegisterDialog, setShowRegisterDialog] = useState(false);
 
     const openRegisterDialog = () => {
@@ -36,6 +37,9 @@ export default function Header() {
 
     if (isSuccess) {
         navigate('/my-menu');
+    }
+    if (isError) {
+        navigate('/order-flow?error');
     }
 
     const handleLogout = () => {
@@ -58,7 +62,7 @@ export default function Header() {
             <div className="container">
                 <nav className="navbar navbar-expand-lg bg-body-tertiary background-white">
                     <Link to="/" className="navbar-brand aj-site-logo">
-                        <img src="/edenmade/logo.png" className="card-img-top rounded-0 logo" alt="logo" />
+                        <img src="/edenmade/logo.png" className="card-img-top rounded-0 logo" alt="logo"/>
                     </Link>
                     <button
                         className="navbar-toggler"
@@ -74,27 +78,27 @@ export default function Header() {
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <NavLink to="/about" className="nav-link" activeClassName="active">
+                                <NavLink to="/about" className="nav-link header-items" activeClassName="active">
                                     About us
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/faq" className="nav-link " activeClassName="active">
+                                <NavLink to="/faq" className="nav-link header-items " activeClassName="active">
                                     FAQ
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/how-it-works" className="nav-link" activeClassName="active">
+                                <NavLink to="/how-it-works" className="nav-link header-items" activeClassName="active">
                                     How it works
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/recipes" className="nav-link" activeClassName="active">
+                                <NavLink to="/recipes" className="nav-link header-items" activeClassName="active">
                                     Our recipe
                                 </NavLink>
                             </li>
                             <li className="nav-item">
-                                <NavLink to="/contact" className="nav-link" activeClassName="active">
+                                <NavLink to="/contact" className="nav-link header-items" activeClassName="active">
                                     Contact us
                                 </NavLink>
                             </li>
@@ -110,7 +114,7 @@ export default function Header() {
                                     <i className="fi fi-sr-user"></i>
                                     <Link
                                         to="#"
-                                        className="nav-link dropdown-toggle text-primary"
+                                        className="nav-link header-items dropdown-toggle text-primary"
                                         role="button"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false"
@@ -127,7 +131,7 @@ export default function Header() {
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <hr className="dropdown-divider" />
+                                                    <hr className="dropdown-divider"/>
                                                 </li>
                                                 <li>
                                                     <div data-bs-toggle="modal" data-bs-target="#GetPlanSetting"
@@ -136,7 +140,7 @@ export default function Header() {
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <hr className="dropdown-divider" />
+                                                    <hr className="dropdown-divider"/>
                                                 </li>
                                                 <li>
                                                     <NavLink
@@ -150,7 +154,7 @@ export default function Header() {
                                             </>
                                         }
                                         <li>
-                                            <hr className="dropdown-divider" />
+                                            <hr className="dropdown-divider"/>
                                         </li>
                                         {user && user.customer_id ? (
                                             <li onClick={handleLogout}>
@@ -172,11 +176,13 @@ export default function Header() {
                     </div>
                 </nav>
             </div>
-            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <AccountInfo />
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <AccountInfo/>
             </div>
-            <div className="modal fade" id="GetPlanSetting" tabIndex="-1" aria-labelledby="GetPlanSetting" aria-hidden="true">
-                <GetPlanSetting data={plan} />
+            <div className="modal fade" id="GetPlanSetting" tabIndex="-1" aria-labelledby="GetPlanSetting"
+                 aria-hidden="true">
+                <GetPlanSetting data={plan}/>
             </div>
         </div>
     );

@@ -22,10 +22,6 @@ export default function Contactus() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         // Here you would typically handle form submission, e.g., send data to a backend or display a success message
-        console.log("Name:", name);
-        console.log("Email:", email);
-        console.log("Message:", message);
-        // Clear form fields after submission
         const resp = await contactUs({name, email, message});
         if (resp && resp.status === 1) {
             toast.success(`Message Sent! We'll get back to you ASAP!`);

@@ -4,7 +4,6 @@ import RecipeCard from "./RecipeCard.jsx";
 const OrderDetails = ({ orderDetails, selectedWeek }) => {
     // Filter order details based on selected week
     const selectedWeekOrder = orderDetails?.find(order => order.week === selectedWeek);
-    console.log('selectedWeekOrder', selectedWeekOrder)
     if (!selectedWeekOrder) {
         // Handle case where no order details found for selected week
         return <div>No order details found for the selected week.</div>;

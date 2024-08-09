@@ -7,7 +7,6 @@ export default function LandingPage() {
     const navigate = useNavigate();
     const handleButtonClick = () => {
         // Navigate to the "/orderFlow" route
-        console.log('user', user)
         if (user && user.customer_id) {
             navigate("/my-menu");
         } else {
@@ -15,9 +14,7 @@ export default function LandingPage() {
         }
     };
     const {user} = useAuth();
-    useEffect(() => {
-        console.log('authUser:: ', user)
-    })
+
     return (
         <>
             <section className="banner-section">

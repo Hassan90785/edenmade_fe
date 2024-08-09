@@ -9,15 +9,12 @@ import {toast} from "react-toastify";
 const AccountInfo = () => {
     const {user, setUserDetails} = useAuth();
     const updateUserDetails = (prop, value) => {
-        console.log('Props:', prop)
-        console.log('value:', value)
         const updatedUser = {...user, [prop]: value};
         // Update user details using setUserDetails function
         setUserDetails(updatedUser);
     };
     const saveChanges = async () => {
         const data = await updateCustomerDetails(user);
-        console.log('data', data)
         localStorage.removeItem('user')
         localStorage.setItem('user', JSON.stringify(data))
         setUserDetails(data);
