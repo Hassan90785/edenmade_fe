@@ -17,6 +17,7 @@ export default function Header() {
             if (userData && userData.customer_id) {
                 const orderInfo = await getPlanSettings({customer_id: userData.customer_id});
                 setPlan(orderInfo);
+                navigate('/my-menu');
             }
         } catch (error) {
             console.error("Error fetching order:", error);

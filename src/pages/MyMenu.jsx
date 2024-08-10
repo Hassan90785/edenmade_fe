@@ -49,7 +49,6 @@ export default function MyMenu() {
                 const deliveryDate = getDeliveryDateWithNullPayment(orderInfo);
                 if (deliveryDate) {
                     const date = new Date(deliveryDate);
-                    date.setDate(date.getDate() - 2);
 
                     const twoDaysAgo = date.toISOString();
                     setUpcoming(twoDaysAgo);
