@@ -56,7 +56,11 @@ const faqData = [
 
 const FAQ = () => {
     return (
-        <div className="container my-5 aj-drop-shadow background-white">
+        <div className="container-fluid my-5  ">
+            <div className="bg-wd"></div>
+            <div className="bg-wm"></div>
+            <div className="bg-dots dark"></div>
+            <div className="container">
             <div className="row py-3">
                 <div className="col">
                     <h1 className="text-center my-3 aj-site-logo">FAQ</h1>
@@ -89,6 +93,7 @@ const FAQ = () => {
                         ))}
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );
