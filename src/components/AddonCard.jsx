@@ -1,11 +1,34 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSelected, snackOrder}) {
+const SampleNextArrow = ({ className, style, onClick }) => (
+    <div
+        className={className}
+        style={{ ...style, display: "block", background: "#ff6900", borderRadius: "50%", padding: "0.5rem" }}
+        onClick={onClick}
+        id={'next'}
+    >
+        <i className="fas fa-chevron-right" style={{ color: "white", fontSize: "1.5rem" }}></i>
+    </div>
+);
+
+const SamplePrevArrow = ({ className, style, onClick }) => (
+    <div
+        id={'prev'}
+        className={className}
+        style={{ ...style, display: "block",  borderRadius: "50%", padding: "0.5rem" }}
+        onClick={onClick}
+    >
+        <i className="fas fa-chevron-left" style={{ color: "white", fontSize: "1.5rem" }}></i>
+    </div>
+);
+
+export default function AddonCard({ orderInfo, itemSource, addRemoveAddOns, canSelected, snackOrder }) {
     const [selectedAddons, setSelectedAddons] = useState([]);
-    console.log('selectedAddons: ', selectedAddons)
+    console.log('selectedAddons: ', selectedAddons);
+
     const handleAddOnSelection = (snack) => {
         if (canSelected) {
             const isSelected = selectedAddons.some(item => item.snacks_id === snack.snacks_id);
@@ -19,20 +42,8 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
             addRemoveAddOns(updatedAddons);
         }
     };
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 5,
-        slidesToScroll: 1,
-    };
-    const settings_v2 = {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        variableWidth: true,
-    };
-    const handleportionChange = (snackId, delta) => {
+
+    const handlePortionChange = (snackId, delta) => {
         const updatedAddons = selectedAddons.map(item => {
             if (item.snacks_id === snackId) {
                 const newportion = Math.max(1, item.portion + delta);
@@ -43,8 +54,20 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
         setSelectedAddons(updatedAddons);
         addRemoveAddOns(updatedAddons);
     };
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 5,
+        slidesToScroll: 1,
+        rows: 4,
+        nextArrow: <SampleNextArrow />,
+        prevArrow: <SamplePrevArrow />
+    };
+
     return (
-        <Slider {...(snackOrder ? settings_v2 : settings)}>
+        <Slider {...settings}>
             {itemSource?.map((snack) => {
                 const selectedSnack = selectedAddons.find(item => item.snacks_id === snack.snacks_id);
                 return (
@@ -68,7 +91,7 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
                                         {snack.name}
                                     </h5>
                                     <p className="card-text body-text-small text-accent mt-1">
-                                        <span className="fw-bold">+ £{snack.price}</span> / {snack.portion} Portion
+                                        <span className="fw-bold">+ £{snack.price}</span> / {snack.portion === 0 ? 'Portion' : `${snack.portion} Portion`}
                                     </p>
                                     {selectedSnack && (
                                         <div
@@ -84,12 +107,14 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
                                             <button
                                                 type="button"
                                                 className="btn p-0 m-0 text-white"
-                                                style={{ backgroundColor: 'transparent', border: 'none',
-                                                    fontWeight:"bold",
-                                                    fontSize: '1rem' }}
+                                                style={{
+                                                    backgroundColor: 'transparent', border: 'none',
+                                                    fontWeight: "bold",
+                                                    fontSize: '1rem'
+                                                }}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleportionChange(snack.snacks_id, -1);
+                                                    handlePortionChange(snack.snacks_id, -1);
                                                 }}
                                             >
                                                 -
@@ -112,26 +137,26 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
                                             <button
                                                 type="button"
                                                 className="btn p-0 m-0 text-white"
-                                                style={{ backgroundColor: 'transparent', border: 'none',
-                                                    fontWeight:"bold",
-                                                    fontSize: '1rem' }}
+                                                style={{
+                                                    backgroundColor: 'transparent', border: 'none',
+                                                    fontWeight: "bold",
+                                                    fontSize: '1rem'
+                                                }}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleportionChange(snack.snacks_id, 1);
+                                                    handlePortionChange(snack.snacks_id, 1);
                                                 }}
                                             >
                                                 +
                                             </button>
                                         </div>
                                     )}
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 );
             })}
-
         </Slider>
     );
 }

@@ -1,5 +1,6 @@
 @import "@flaticon/flaticon-uicons/css/all/all";
 @import 'react-multi-carousel/lib/styles.css';
+
 :root {
     /*  colors  */
     --theme-primary: #ff6900;
@@ -604,6 +605,24 @@ a {
 .dropdown-item.active, .dropdown-item:active {
     background-color: #ff6900 !important;
 }
+/* Remove default hover effect */
+.slick-prev:hover, .slick-next:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+#prev:before {
+    color: #ff6900
+}
+
+#next:before {
+    color: #ff6900
+}
+.slick-prev:hover:before, .slick-prev:focus:before, .slick-next:hover:before, .slick-next:focus:before {
+    background: none !important;
+}
+
 /*//////////////////////////////////*/
 /*////////// CHANGE MEAL //////////*/
 
@@ -688,7 +707,8 @@ a {
 .cursor-pointer {
     cursor: pointer;
 }
- /*About Us*/
+
+/*About Us*/
 .bg-wd:before, .bg-wm:before, .bg-dots:before, .bg-dots.dark:after {
     content: '';
     position: absolute;

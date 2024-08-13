@@ -6,6 +6,7 @@ import ChangeBoxSizePopup from "../components/popups/ChangeBoxSizePopup";
 import {getOrderInfo, getSnackOrder, getSnacks} from "../rest_apis/restApi.jsx";
 import OrderDetails from "../components/OrderDetails.jsx";
 import {addSuffix, renderFormattedDate} from "../components/RenderFormattedDate.jsx";
+import SnackCard from "../components/SnackCard.jsx";
 
 
 export default function MyMenu() {
@@ -158,7 +159,7 @@ export default function MyMenu() {
                                     <i className="fi fi-sr-angle-left fs-4"></i>
                                 </button>
                                 <div className="upcoming-date-wrapper mx-2">
-                                        <p className="text-white body-text-extra-small mb-0">Weekly Subscription Dates</p>
+                                    <p className="text-white body-text-extra-small mb-0">Weekly Subscription Dates</p>
                                     {/* Map through each order detail */}
                                     {orderDetails?.order_details?.map((weekDetail, index) => {
                                         // Parse delivery date string into a Date object
@@ -242,8 +243,9 @@ export default function MyMenu() {
                             </p>
                         </div>
                         <div className="col">
-                            <AddonCard orderInfo={null} itemSource={snackOrderDetails}
+                            <SnackCard orderInfo={null} itemSource={snackOrderDetails}
                                        canSelected={false} snackOrder={true}/>
+
                         </div>
                     </div>
                 }
@@ -268,7 +270,7 @@ export default function MyMenu() {
                             </div>
                         </div>
                         <div className="row">
-                            <AddonCard orderInfo={activeWeekOrder} itemSource={snacks} addRemoveAddOns={addNewAddOns}
+                            <SnackCard orderInfo={activeWeekOrder} itemSource={snacks} addRemoveAddOns={addNewAddOns}
                                        canSelected={false} snackOrder={false}/>
                         </div>
                     </div>
