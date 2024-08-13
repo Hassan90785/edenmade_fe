@@ -18,7 +18,7 @@ export default function ProductSummary({selectedPeople, selectedRecipePerWeek, s
     return (
         <div id="productSummary">
             <div className="w-100 border border-2 py-2 px-3">
-                <p className="body-text-small fw-bold mb-1">Price Summary</p>
+                <p className="body-text-small fw-bold mb-1">Current Subscription Plan</p>
                 <p className="body-text-small lh-sm fw-500">
                     {selectedRecipePerWeek} meals for {selectedPeople} people per week
                     <br/>

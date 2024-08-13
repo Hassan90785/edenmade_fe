@@ -601,7 +601,9 @@ a {
 }
 
 /*///////////////////////////////////*/
-
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #ff6900 !important;
+}
 /*//////////////////////////////////*/
 /*////////// CHANGE MEAL //////////*/
 

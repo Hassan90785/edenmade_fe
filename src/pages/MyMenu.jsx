@@ -25,7 +25,7 @@ export default function MyMenu() {
             "🚀 ~ file: OrderFlow.jsx:27 ~ handleButtonClickMyMenu ~ consol:"
         );
         // Navigate to the "/orderFlow" route
-        navigate("/selected-meals-cart");
+        navigate("/selected-meals-cart?show");
     };
 
     const [activeWeekOrder, setActiveWeekOrder] = useState(null); // State for holding order details of active week

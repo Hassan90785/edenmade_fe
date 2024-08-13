@@ -13,7 +13,6 @@ import {
 import {loadStripe} from "@stripe/stripe-js";
 import {useAuth} from "../auth_v2/authContext.jsx";
 import SnackSummary from "../components/SnackSummary.jsx";
-import {toast} from "react-toastify";
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -30,6 +29,12 @@ export default function Cart() {
     const handleButtonClickMyMenu = () => {
         navigate("/change-meal");
     };
+    useEffect(() => {
+        const show = location.search.includes('show');
+        if (show)
+            setShowAddon(true)
+
+    }, []);
     useEffect(() => {
         updateSnacksOrderDetails('order_id', orderDetails.order_id)
         updateSnacksOrderDetails('week', orderDetails.active_week)
@@ -89,12 +94,9 @@ export default function Cart() {
 
     }
     const makeSnackOrder = async () => {
-        if (cartUpdated) {
-            const result = await addNewSnacksMapping(snacksOrder);
-            await proccedToStripe(result.order_id, result.total_amount);
-        } else {
-            toast.warning('Please update your cart first!')
-        }
+        const result = await addNewSnacksMapping(snacksOrder);
+        await proccedToStripe(result.order_id, result.total_amount);
+
     }
     const addNewAddOns = (addOns) => {
         updateSnacksOrderDetails('snacks', addOns)
@@ -108,10 +110,7 @@ export default function Cart() {
         setShowAddon(false)
         setCartUpdated(false)
     };
-    const handleUpdateCart = () => {
-        setCartUpdated(true)
-        toast.success('Cart updated successfully!')
-    };
+
     const proccedToStripe = async (order_id, total_amount) => {
         const stripe = await loadStripe('pk_test_51Os7kqANqKE86m4zdS4G0wU1OkKxGjgcdj8601Ezm9ugHnAV2IJ3ZpUn4CSqdmIMTqSBKJOzvqLvYxcix6r6293900u66JYNI9');
         const {priceId, productId} = await create_checkout_session_v2({
@@ -196,21 +195,14 @@ export default function Cart() {
                             <div className="col-md-8 col-12 text-end my-auto">
                                 {snacksOrder.snacks && snacksOrder.snacks.length > 0 &&
                                     <button onClick={makeSnackOrder}
-                                            disabled={!cartUpdated}
                                             className="btn btn-primary aj-button background-secondary  body-text-small  border-0 fw-700 px-5 me-3">
                                         <i className="fi fi-brands-paypal fs-6 me-2 align-middle lh-1"></i>{" "}
-                                        Continue with Stripe
+                                        Check Out
                                     </button>
                                 }
                                 <button className="btn btn-transparent aj-button body-text-small fw-700 px-5 me-3"
                                         onClick={handleClearCart}>
                                     Empty Cart
-                                </button>
-                                <button
-                                    className="btn btn-primary aj-button body-text-small fw-700 px-5"
-                                    onClick={handleUpdateCart}
-                                >
-                                    Update Cart
                                 </button>
                             </div>
                         </div>

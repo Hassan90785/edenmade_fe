@@ -22,7 +22,7 @@ export default function SnackSummary({ snacksOrder }) {
             <div className="w-100 border border-2 py-2 px-3 background-secondary">
                 <div className="row">
                     <div className="col-6">
-                        <p className="body-text-small fw-bolder mb-1">Amount Payable</p>
+                        <p className="body-text-small fw-bolder mb-1">Total To Pay</p>
                     </div>
                     <div className="col-6 text-end">
                         <p className="body-text-small fw-bolder mb-1">£{totalPrice.toFixed(2)}</p>
