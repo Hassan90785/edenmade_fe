@@ -5,19 +5,18 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSelected, snackOrder}) {
     const [selectedAddons, setSelectedAddons] = useState([]);
-
+    console.log('selectedAddons: ', selectedAddons)
     const handleAddOnSelection = (snack) => {
-        let addOn = [];
         if (canSelected) {
-            const isSelected = selectedAddons.includes(snack);
+            const isSelected = selectedAddons.some(item => item.snacks_id === snack.snacks_id);
+            let updatedAddons;
             if (isSelected) {
-                addOn = selectedAddons.filter(item => item !== snack);
-                setSelectedAddons(addOn);
+                updatedAddons = selectedAddons.filter(item => item.snacks_id !== snack.snacks_id);
             } else {
-                addOn = [...selectedAddons, snack]
-                setSelectedAddons(addOn);
+                updatedAddons = [...selectedAddons, { ...snack, portion: 1 }];
             }
-            addRemoveAddOns(addOn);
+            setSelectedAddons(updatedAddons);
+            addRemoveAddOns(updatedAddons);
         }
     };
     const settings = {
@@ -33,37 +32,106 @@ export default function AddonCard({orderInfo, itemSource, addRemoveAddOns, canSe
         speed: 500,
         variableWidth: true,
     };
-
+    const handleportionChange = (snackId, delta) => {
+        const updatedAddons = selectedAddons.map(item => {
+            if (item.snacks_id === snackId) {
+                const newportion = Math.max(1, item.portion + delta);
+                return { ...item, portion: newportion };
+            }
+            return item;
+        });
+        setSelectedAddons(updatedAddons);
+        addRemoveAddOns(updatedAddons);
+    };
     return (
         <Slider {...(snackOrder ? settings_v2 : settings)}>
-            {itemSource?.map((snack) => (
-                <div key={snack.snacks_id}>
-                    <div
-                        className={`col-sm-6 col-md-8 col-lg mt-3 ${selectedAddons.includes(snack) ? 'ordered_recipe' : ''}`}
-                        onClick={() => handleAddOnSelection(snack)}>
-                        <div className="card border-0 rounded-0 aj-drop-shadow">
-                            <div className="aj-badge">
-                                <p className="text-white body-text-extra-small my-0 py-0 fw-bold">
-                                    Movie Night
-                                </p>
-                            </div>
-                            <img
-                                className="card-img-top rounded-0"
-                                src={`/edenmade/addon.png`}
-                                alt="Snack Image"
-                            />
-                            <div className="card-body">
-                                <h5 className="card-title body-text-small fw-bold mb-0 lh-2">
-                                    {snack.name}
-                                </h5>
-                                <p className="card-text body-text-small text-accent mt-1">
-                                    <span className="fw-bold">+ £{snack.price}</span> / Portion
-                                </p>
+            {itemSource?.map((snack) => {
+                const selectedSnack = selectedAddons.find(item => item.snacks_id === snack.snacks_id);
+                return (
+                    <div key={snack.snacks_id}>
+                        <div
+                            className={`col-sm-6 col-md-8 col-lg mt-3 ${selectedSnack ? 'ordered_recipe' : ''}`}
+                            onClick={() => handleAddOnSelection(snack)}>
+                            <div className="card border-0 rounded-0 aj-drop-shadow">
+                                <div className="aj-badge">
+                                    <p className="text-white body-text-extra-small my-0 py-0 fw-bold">
+                                        Movie Night
+                                    </p>
+                                </div>
+                                <img
+                                    className="card-img-top rounded-0"
+                                    src={`/edenmade/addon.png`}
+                                    alt="Snack Image"
+                                />
+                                <div className="card-body">
+                                    <h5 className="card-title body-text-small fw-bold mb-0 lh-2">
+                                        {snack.name}
+                                    </h5>
+                                    <p className="card-text body-text-small text-accent mt-1">
+                                        <span className="fw-bold">+ £{snack.price}</span> / {snack.portion} Portion
+                                    </p>
+                                    {selectedSnack && (
+                                        <div
+                                            className="d-inline-flex align-items-center float-end mt-2"
+                                            style={{
+                                                backgroundColor: '#ff6900',
+                                                borderRadius: '50px',
+                                                padding: '0.15rem 0.5rem',
+                                                width: 'auto',
+                                            }}
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <button
+                                                type="button"
+                                                className="btn p-0 m-0 text-white"
+                                                style={{ backgroundColor: 'transparent', border: 'none',
+                                                    fontWeight:"bold",
+                                                    fontSize: '1rem' }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleportionChange(snack.snacks_id, -1);
+                                                }}
+                                            >
+                                                -
+                                            </button>
+                                            <input
+                                                type="text"
+                                                className="text-center mx-2"
+                                                value={selectedSnack.portion}
+                                                disabled={true}
+                                                style={{
+                                                    width: '30px',
+                                                    backgroundColor: 'transparent',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    outline: 'none',
+                                                    fontSize: '1rem',
+                                                }}
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                            <button
+                                                type="button"
+                                                className="btn p-0 m-0 text-white"
+                                                style={{ backgroundColor: 'transparent', border: 'none',
+                                                    fontWeight:"bold",
+                                                    fontSize: '1rem' }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleportionChange(snack.snacks_id, 1);
+                                                }}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    )}
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
+
         </Slider>
     );
 }

@@ -2,7 +2,8 @@ import React from 'react';
 
 export default function SnackSummary({ snacksOrder }) {
     // Calculate total price of all snacks
-    const totalPrice = snacksOrder.snacks.reduce((acc, snack) => acc + snack.price, 0);
+    const totalPrice = snacksOrder.snacks.reduce((acc, snack) => acc + snack.price * snack.portion, 0);
+
 
     return (
         <div id="productSummary">
@@ -11,10 +12,10 @@ export default function SnackSummary({ snacksOrder }) {
                 {snacksOrder?.snacks?.map(snack => (
                     <div className="row" key={snack.snacks_id}>
                         <div className="col-6">
-                            <p className="body-text-small fw-500 mb-1">{snack.name}</p>
+                            <p className="body-text-small fw-500 mb-1">{snack.name} x {snack.portion}</p>
                         </div>
                         <div className="col-6 text-end">
-                            <p className="body-text-small fw-500 mb-1">£{snack.price.toFixed(2)}</p>
+                            <p className="body-text-small fw-500 mb-1">£{(snack.portion * snack.price).toFixed(2)}</p>
                         </div>
                     </div>
                 ))}

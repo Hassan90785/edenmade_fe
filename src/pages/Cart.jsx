@@ -62,7 +62,8 @@ export default function Cart() {
         async function fetchData() {
             try {
                 const allSnacks = await getSnacks();
-                setSnacks(allSnacks);
+                const updatedSnacks = allSnacks.map(snack => ({ ...snack, portion: 0 }));
+                setSnacks(updatedSnacks);
             } catch (error) {
                 console.error("Error fetching getAllSnacks:", error);
             }
