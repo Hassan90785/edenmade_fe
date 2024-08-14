@@ -605,6 +605,7 @@ a {
 .dropdown-item.active, .dropdown-item:active {
     background-color: #ff6900 !important;
 }
+
 /* Remove default hover effect */
 .slick-prev:hover, .slick-next:hover {
     background: none;
@@ -612,15 +613,16 @@ a {
     box-shadow: none;
 }
 
-#prev:before {
-    color: #ff6900
-}
 
-#next:before {
-    color: #ff6900
-}
-.slick-prev:hover:before, .slick-prev:focus:before, .slick-next:hover:before, .slick-next:focus:before {
-    background: none !important;
+.intro-container {
+    border-left: 2px solid #60725D;
+    border-right: 8px solid #60725D;
+    border-top: 4px solid #60725D;
+    border-bottom: 6px solid #60725D;
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    background-color: #ffffff;
 }
 
 /*//////////////////////////////////*/
@@ -824,6 +826,84 @@ a {
     color: #548C2F; /* Maintain the existing color */
 }
 
-.fw-bold {
-    font-weight: bold;
+/* Blue Swirl */
+.swirls.blue:before {
+    top: 41%;
+    left: 2em;
+    z-index: -2; /* Adjust z-index */
+    background-color: #A8D5E2;
+    scale: 2;
+
+}
+/* Orange Swirl */
+.swirls.orange:before {
+    top: 21%;
+    left: 2em;
+    z-index: -1;
+    background-color: #F9A620;
+    scale: 2;
+}
+
+.swirls.blue:after, .swirls.blue:before {
+    position: absolute;
+    transform: rotate(90deg);
+    width: 50%;
+    height: 50%;
+    content: '';
+    -webkit-mask: url(https://cdn.shopify.com/s/files/1/0411/6237/5331/files/swirl-01.svg?v=1702389769) no-repeat 50% 50%;
+    mask: url(https://cdn.shopify.com/s/files/1/0411/6237/5331/files/swirl-01.svg?v=1702389769) no-repeat 50% 50%;
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    opacity: 0.6;
+}
+
+
+.swirls.orange:after, .swirls.orange:before {
+    position: absolute;
+    transform: rotate(90deg);
+    width: 50%;
+    height: 50%;
+    content: '';
+    -webkit-mask: url(https://cdn.shopify.com/s/files/1/0411/6237/5331/files/swirl-01.svg?v=1702389769) no-repeat 50% 50%;
+    mask: url(https://cdn.shopify.com/s/files/1/0411/6237/5331/files/swirl-01.svg?v=1702389769) no-repeat 50% 50%;
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    opacity: 0.6;
+}
+.scroll-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Aligns items at the top */
+    height: 77vh; /* Section takes full viewport height */
+    opacity: 1; /* No transition, fully visible */
+    transform: translateY(0); /* Normal position */
+}
+
+.text-container,
+.scroll-section img {
+    flex: 1; /* 50% width each */
+    padding: 20px;
+}
+
+.text-container {
+    padding-top: 0; /* Optional: Adjust padding as needed */
+}
+
+.scroll-section img {
+    max-width: 100%; /* Ensure image scales correctly */
+    height: auto;
+}
+.image-row {
+    display: flex;
+    justify-content: space-between; /* Evenly space the images */
+    align-items: center;
+    gap: 10px; /* Optional: Adjust the gap between images */
+}
+
+.image-row img {
+    flex: 1; /* Equal width for each image */
+    max-width: 100%; /* Ensures images are responsive */
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the images cover the area without distortion */
+    width: calc(25% - 10px); /* Each image takes 25% of the container's width */
 }

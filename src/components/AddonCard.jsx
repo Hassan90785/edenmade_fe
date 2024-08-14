@@ -6,11 +6,20 @@ import "slick-carousel/slick/slick-theme.css";
 const SampleNextArrow = ({ className, style, onClick }) => (
     <div
         className={className}
-        style={{ ...style, display: "block", background: "#ff6900", borderRadius: "50%", padding: "0.5rem" }}
+        style={{
+            ...style,
+            display: "flex",
+            background: "#ff6900",
+            borderRadius: "50%",
+            width: "2rem",
+            height: "2rem",
+            justifyContent: "center",
+            alignItems: "center"
+        }}
         onClick={onClick}
         id={'next'}
     >
-        <i className="fas fa-chevron-right" style={{ color: "white", fontSize: "1.5rem" }}></i>
+        <i className="fas fa-chevron-right" style={{ color: "white", fontSize: "2.5rem", margin: 0, padding: 0 }}></i>
     </div>
 );
 
@@ -18,12 +27,21 @@ const SamplePrevArrow = ({ className, style, onClick }) => (
     <div
         id={'prev'}
         className={className}
-        style={{ ...style, display: "block",  borderRadius: "50%", padding: "0.5rem" }}
+        style={{
+            ...style,
+            display: "flex",
+            borderRadius: "50%",
+            width: "3rem",
+            height: "3rem",
+            justifyContent: "center",
+            alignItems: "center"
+        }}
         onClick={onClick}
     >
-        <i className="fas fa-chevron-left" style={{ color: "white", fontSize: "1.5rem" }}></i>
+        <i className="fas fa-chevron-left" style={{ color: "white", fontSize: "1.5rem", margin: 0, padding: 0 }}></i>
     </div>
 );
+
 
 export default function AddonCard({ orderInfo, itemSource, addRemoveAddOns, canSelected, snackOrder }) {
     const [selectedAddons, setSelectedAddons] = useState([]);
