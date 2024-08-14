@@ -64,7 +64,7 @@ export default function Aboutus() {
 
 
     return (
-        <div className="container-fluid overflow-hidden my-5 position-relative">
+        <div className="container-fluid overflow-hidden my-5 position-relative about-us" >
             <div className="swirls blue"></div>
             <div className="swirls orange"></div>
             <div className="bg-wd"></div>

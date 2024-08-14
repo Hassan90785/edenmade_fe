@@ -1,21 +1,137 @@
+const Section = ({imageSrc, heading, text, buttonText, textOnLeft}) => {
+    return (
+        <section className={`section-how ${textOnLeft ? 'text-left' : 'text-right'}`}>
+            <div className="content-container">
+                <div className="text-content">
+                    <h1 className={'my-3'}>{heading}</h1>
+                    <p>{text}</p>
+                    <button>{buttonText}</button>
+                </div>
+                <div className="image-content">
+                    <img src={imageSrc} alt="section"/>
+                </div>
+            </div>
+        </section>
+    );
+};
+const IconSection = ({iconSrc, heading, text}) => {
+    return (
+        <section className="icon-section ">
+            <div className="icon-container">
+                <img src={iconSrc} alt="icon" className="icon-img ms-3"/>
+            </div>
+            <div className="text-content">
+                <h2 className={'fw-bold'}>{heading}</h2>
+                <p>{text}</p>
+            </div>
+        </section>
+    );
+};
+
 export default function Howitworks() {
     return (
-        <div className="container my-5 aj-drop-shadow background-white">
-            <div className="row py-3">
-                <div className="col">
-                    <h1 className={'text-center my-3 aj-site-logo'}>How It Works</h1>
-                    <p>At Edenmade, we strive to make home-cooked meals and snacks not only convenient but also a delightful experience. Here’s how we ensure that every step of your Edenmade journey is seamless:</p>
-                    <ol>
-                        <li>Explore our diverse menu featuring seasonal dishes, snacks, and sides. Choose your favorites based on your tastes and dietary preferences.</li>
-                        <li>Once you've made your selection, our culinary experts carefully curate your order. Every ingredient, from farm-fresh produce to premium cuts of meat, is sourced for its quality and flavor.</li>
-                        <li>Your customized Edenmade box is then packed with precision, ensuring that each ingredient is measured and portioned to perfection. This attention to detail guarantees that you have everything you need to create delicious meals and snacks at home.</li>
-                        <li>Enjoy the convenience of doorstep delivery. Your Edenmade box arrives on a schedule that fits your lifestyle, eliminating the need for last-minute grocery runs.</li>
-                        <li>Follow our easy-to-follow recipes crafted by our chefs. Whether you’re preparing a hearty dinner or a quick snack, our recipes are designed to make cooking enjoyable and stress-free.</li>
-                        <li>We understand that preferences may change or you may want to add extra treats. That’s why our platform allows you to easily customize your order with additional snacks or sides at any time.</li>
-                    </ol>
-                    <p>At Edenmade, our commitment extends beyond delivering delicious meals and snacks. We deeply value our customers and their satisfaction is at the heart of everything we do. From our dedicated customer support team to our commitment to sourcing high-quality ingredients, we prioritize your experience.</p>
-                    <p>We believe in fostering a community where cooking is a joy and meals bring people together. Whether you're exploring new culinary adventures or rediscovering family favorites, Edenmade is here to support you every step of the way.</p>
-                    <p>Join us in experiencing the pleasure of cooking and dining with Edenmade. Discover a fresher, more inspired way to enjoy wholesome meals and flavorful snacks, crafted with care and delivered with convenience.</p>
+        <div className="container-fluid overflow-hidden my-5 position-relative about-us">
+            <div className="bg-wd"></div>
+            <div className="bg-wm"></div>
+            <div className="bg-dots dark"></div>
+            <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <h1 className={'text-center my-3 aj-site-logo'}>How Edenmade Works</h1>
+                    </div>
+                </div>
+                <div className="video-wrapper">
+                    <div className="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/0RD4kY0o9N8"
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                </div>
+                <Section
+                    imageSrc="https://img.hellofresh.com/w_1920,q_auto,f_auto,c_limit,fl_lossy/hellofresh_website/us/cms/howitworks/hiw-plan.jpg"
+                    heading="1. Pick a plan"
+                    text="Whether cooking for yourself or your household, we have a flexible plan to match your lifestyle. Need to cancel, change meals, or skip a week? Not a problem."
+                    buttonText="Get 60% off 1st box + free dessert for life!"
+                    textOnLeft={true}
+                />
+                <Section
+                    imageSrc="https://img.hellofresh.com/w_1920,q_auto,f_auto,c_limit,fl_lossy/hellofresh_website/us/cms/howitworks/hiw-delivery.jpg"
+                    heading="2. Fresh ingredients delivered"
+                    text="We deliver your step-by-step recipes and all the fresh pre-portioned ingredients you need, straight to your door."
+                    buttonText="Get 60% off 1st box + free dessert for life!"
+                    textOnLeft={false}
+                />
+                <Section
+                    imageSrc="https://img.hellofresh.com/w_1920,q_auto,f_auto,c_limit,fl_lossy/hellofresh_website/us/cms/howitworks/hiw-family.jpg"
+                    heading="3. Cook, eat, enjoy!"
+                    text="The old “what do you want to eat?” conversation is about to be banished from your life. Welcome to a world where dinner is always planned, simple, and delicious."
+                    buttonText="Get 60% off 1st box + free dessert for life!"
+                    textOnLeft={true}
+                />
+
+                <div className="row">
+                    <div className="col">
+                        <h1 className={'text-center'}>Benefits</h1>
+                    </div>
+                </div>
+                <div className="row my-5">
+                    <div className="col-10 offset-md-2">
+                        <div className="row">
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-deliciousness.svg"  // Replace with your icon image URL
+                                    heading="Deliciousness"
+                                    text="Our chef-created recipes are tested 200 times to ensure your meals are as delicious to eat as they are easy to make."
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-simplicity.svg"  // Replace with your icon image URL
+                                    heading="Simplicity"
+                                    text="From step-by-step recipes to no-hassle account changes, we make your life easier every way we can."
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-flexibility.svg"  // Replace with your icon image URL
+                                    heading="Flexibility"
+                                    text="We accommodate every appetite, household size, and schedule. Need to skip a week or cancel? No problem."
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-stress-free.svg"  // Replace with your icon image URL
+                                    heading="Stress-free"
+                                    text="Take back your evenings with fewer trips to the store, pre-planned meals, and little cleanup."
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-dietarily-diverse.svg"  // Replace with your icon image URL
+                                    heading="Dietarily diverse"
+                                    text="Picky appetites welcome! Tell us what you like and don’t like, and we’ll recommend something delicious."
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <IconSection
+                                    iconSrc="https://cdn.hellofresh.com/us/how-it-works-fragment/hiw-benefits-icon-no-waste.svg"  // Replace with your icon image URL
+                                    heading="No waste"
+                                    text="It’s easy being green with our pre-measured ingredients and recyclable materials."
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+
+                            <div className="col">
+                                <button className={'big-button w-100'}>Get 60% off 1st box + free dessert for life!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
